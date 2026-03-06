@@ -3,189 +3,289 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Читання | Ясно.Закон</title>
+    <title>Zakon.pro | Закони України</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        /* Базовые стили из твоего шаблона */
+        /* --- СТИЛИ БЕЗ ИЗМЕНЕНИЙ (ТВОЙ ОРИГИНАЛ) --- */
         :root { 
-            --primary: #6366f1; --primary-glow: rgba(99, 102, 241, 0.5); 
-            --bg-grad-1: #1e293b; --bg-grad-2: #0f172a; 
+            --primary: #6366f1; 
+            --primary-glow: rgba(99, 102, 241, 0.5); 
+            --bg-grad-1: #1e293b; 
+            --bg-grad-2: #0f172a; 
             --card-bg: rgba(30, 41, 59, 0.7); 
-            --text-main: #f1f5f9; --text-muted: #94a3b8; 
+            --text-main: #f1f5f9; 
+            --text-muted: #94a3b8; 
             --danger: #ef4444; 
+            --danger-bg: rgba(239, 68, 68, 0.1); 
+            --success: #10b981;
         }
+
         [data-theme="light"] { 
             --bg-grad-1: #e2e8f0; --bg-grad-2: #f8fafc; 
             --card-bg: rgba(255, 255, 255, 0.8); 
             --text-main: #0f172a; --text-muted: #64748b; 
+            --primary-glow: rgba(99, 102, 241, 0.2); 
         }
+
         [data-theme="black"] { 
             --bg-grad-1: #000000; --bg-grad-2: #050505; 
             --card-bg: rgba(20, 20, 20, 0.9); 
             --text-main: #ffffff; --text-muted: #a3a3a3; 
         }
 
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
-        
+        ::-webkit-scrollbar { width: 0; background: transparent; }
+        html { scrollbar-width: none; }
         body { 
+            -ms-overflow-style: none; 
             font-family: 'Inter', sans-serif; 
             background: radial-gradient(circle at top, var(--bg-grad-1), var(--bg-grad-2)); 
-            background-attachment: fixed; color: var(--text-main); 
-            margin: 0; padding: 0; min-height: 100vh; transition: 0.5s ease; 
+            background-attachment: fixed; 
+            background-size: cover; 
+            color: var(--text-main); 
+            margin: 0; padding: 20px; 
+            min-height: 100vh; 
+            display: flex; flex-direction: column; align-items: center; 
+            transition: background 0.5s ease, color 0.5s ease; 
         }
 
-        /* Шапка */
-        header {
-            position: sticky; top: 0; z-index: 100;
-            background: var(--card-bg); backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(128, 128, 128, 0.2);
-            padding: 15px 30px; display: flex; justify-content: space-between; align-items: center;
-        }
-        .back-btn { color: var(--text-muted); text-decoration: none; font-weight: 600; transition: 0.2s;}
-        .back-btn:hover { color: var(--text-main); }
-        .logo { font-weight: 800; font-size: 1.2rem; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 10px var(--primary-glow);}
+        /* === НОВЫЕ СТИЛИ ДЛЯ ПОИСКА === */
+        header { width: 100%; max-width: 1000px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;}
+        .search-bar { flex-grow: 1; max-width: 400px; position: relative; }
+        .search-bar input { width: 100%; padding: 12px 20px; border-radius: 12px; border: 1px solid rgba(128, 128, 128, 0.2); background: var(--card-bg); color: var(--text-main); font-size: 1rem; outline: none; backdrop-filter: blur(10px); transition: 0.3s; box-sizing: border-box;}
+        .search-bar input:focus { border-color: var(--primary); box-shadow: 0 0 15px var(--primary-glow); }
 
-        /* Сетка 3 колонок */
-        .layout {
-            display: grid;
-            grid-template-columns: 250px 1fr 300px;
-            gap: 20px; max-width: 1400px; margin: 20px auto; padding: 0 20px;
-            align-items: start;
-        }
-
-        /* Боковые панели */
-        .sidebar {
-            position: sticky; top: 80px;
-            background: var(--card-bg); border: 1px solid rgba(128,128,128,0.1);
-            border-radius: 16px; padding: 20px; backdrop-filter: blur(10px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        .nav-list { list-style: none; padding: 0; margin: 0; }
-        .nav-list li { margin-bottom: 10px; font-size: 0.9rem; cursor: pointer; color: var(--text-muted); transition: 0.2s; }
-        .nav-list li:hover, .nav-list li.active { color: var(--primary); font-weight: 600; }
-        .nav-list .sub { padding-left: 15px; font-size: 0.85rem; }
-
-        /* Центральный текст */
-        .content {
-            background: var(--card-bg); border: 1px solid rgba(128,128,128,0.1);
-            border-radius: 16px; padding: 40px; backdrop-filter: blur(10px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); line-height: 1.6;
-        }
-        .content h1 { font-size: 2rem; margin-top: 0; margin-bottom: 5px; color: var(--text-main);}
-        .content h2 { font-size: 1.2rem; margin-top: 30px; color: var(--text-main); border-bottom: 1px solid rgba(128,128,128,0.2); padding-bottom: 10px;}
-        .meta { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 30px; }
+        #app-content { width: 100%; max-width: 1000px; animation: fadeIn 0.6s ease-out; position: relative; z-index: 2; }
+        h1 { text-align: center; font-weight: 800; font-size: 2.5rem; margin: 0; background: linear-gradient(90deg, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; color: var(--text-main); text-transform: uppercase; letter-spacing: 1px; }
+        [data-theme="light"] h1 { background: linear-gradient(90deg, #475569, #0f172a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        /* Всплывающая подсказка (Tooltip) */
-        .cross-link {
-            color: var(--primary); border-bottom: 1px dashed var(--primary); cursor: help; position: relative;
-        }
-        .tooltip {
-            visibility: hidden; position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%);
-            width: 250px; background: var(--bg-grad-2); color: #fff; text-align: left;
-            border-radius: 8px; padding: 10px; font-size: 0.8rem; z-index: 10;
-            border: 1px solid var(--primary); box-shadow: 0 0 15px var(--primary-glow);
-            opacity: 0; transition: opacity 0.3s; pointer-events: none;
-        }
-        .cross-link:hover .tooltip { visibility: visible; opacity: 1; }
+        .alert-box { background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 12px; padding: 20px; margin: 20px auto 40px auto; text-align: center; backdrop-filter: blur(5px); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
+        .menu-btn { background: var(--card-bg); border: 1px solid rgba(128, 128, 128, 0.1); padding: 40px 25px; border-radius: 16px; text-align: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; backdrop-filter: blur(10px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .menu-btn:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 25px -5px var(--primary-glow); }
 
-        /* ИИ Помощник */
-        .ai-box { border-color: var(--primary); }
-        .ai-title { font-weight: 800; color: var(--primary); margin-bottom: 10px; display: flex; align-items: center; gap: 8px;}
-        .ai-btn {
-            background: var(--primary); color: white; border: none; width: 100%;
-            padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s;
-        }
-        .ai-btn:hover { box-shadow: 0 0 15px var(--primary-glow); }
-        .ai-result {
-            margin-top: 15px; padding: 15px; background: rgba(0,0,0,0.2);
-            border-radius: 8px; font-size: 0.9rem; border-left: 3px solid var(--primary);
-            display: none; animation: fadeIn 0.3s;
-        }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; animation: fadeIn 0.3s; }
+        .settings-panel { background: var(--bg-grad-2); border: 1px solid var(--primary); width: 90%; max-width: 450px; padding: 30px; border-radius: 20px; box-shadow: 0 0 40px var(--primary-glow); position: relative; }
+        .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+        .close-btn { background: transparent; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
+        
+        .theme-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .theme-btn { padding: 12px; border-radius: 10px; border: 2px solid transparent; cursor: pointer; text-align: center; font-weight: 600; transition: 0.2s; background: rgba(255,255,255,0.05); color: var(--text-main); }
+        .theme-btn:hover { background: rgba(255,255,255,0.1); }
+        .theme-btn.active { border-color: var(--primary); background: rgba(99, 102, 241, 0.15); color: var(--primary); }
+        
+        .toggle-row { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 12px; }
+        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #475569; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(24px); }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Адаптация под телефоны */
-        @media (max-width: 1024px) {
-            .layout { grid-template-columns: 1fr; }
-            .sidebar { position: relative; top: 0; margin-bottom: 20px; }
-        }
+        /* === СТИЛИ ДЛЯ ТАЙМЕРА (БЕЗ ИЗМЕНЕНИЙ) === */
+        .timer-wrapper { display: flex; justify-content: center; gap: 12px; }
+        .timer-box { background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 10px; min-width: 55px; display: flex; flex-direction: column; align-items: center; backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s; }
+        .timer-box:hover { transform: translateY(-3px); border-color: var(--primary); }
+        .t-val { font-size: 1.5rem; font-weight: 800; color: var(--primary); line-height: 1; font-variant-numeric: tabular-nums; text-shadow: 0 0 15px var(--primary-glow); }
+        .t-label { font-size: 0.6rem; color: var(--text-muted); margin-top: 5px; font-weight: 600; }
     </style>
 </head>
-<body>
+<body data-theme="default">
 
     <header>
-        <a href="index.html" class="back-btn">← На головну</a>
-        <div class="logo">ЯСНО.ЗАКОН</div>
-        <div style="width: 80px;"></div> </header>
+        <h1>ZAKON.PRO</h1>
+        <div class="search-bar">
+            <input type="text" placeholder="Пошук законів або статей (напр: штраф за паркування)..." autocomplete="off">
+        </div>
+    </header>
 
-    <div class="layout">
+    <div id="app-content">
+        <div class="alert-box">
+            <span style="display:block; margin-bottom:15px; font-size:0.85rem; opacity:0.8;">Всі дані автоматично синхронізуються з Єдиним державним реєстром.</span>
+            <span style="color:var(--primary); font-weight:bold; font-size:1.1rem; display:block; text-transform:uppercase;">⚖️ Знайте свої права</span>
+            <p style="color:var(--text-muted); font-size:0.95rem; line-height:1.5;">Наш ШІ-помічник допоможе перекласти складний юридичний текст на зрозумілу людську мову.</p>
+        </div>
         
-        <aside class="sidebar">
-            <h3 style="margin-top:0;">Зміст</h3>
-            <ul class="nav-list">
-                <li class="active">Розділ I. Загальні положення</li>
-                <li class="sub">• Стаття 1. Визначення</li>
-                <li class="sub">• Стаття 2. Сфера дії</li>
-                <li>Розділ II. Податки та збори</li>
-                <li class="sub">• Стаття 10. Види податків</li>
-            </ul>
-        </aside>
-
-        <main class="content">
-            <h1>Податковий кодекс України</h1>
-            <div class="meta">Остання редакція: 05.03.2026 • Чинний</div>
-
-            <h2>Стаття 1. Визначення термінів</h2>
-            <p>1.1. Податковий кодекс регулює відносини, що виникають у сфері справляння податків і зборів, визначає вичерпний перелік податків та зборів, що справляються в Україні.</p>
-            
-            <p>1.2. Терміни у цьому Кодексі використовуються у значеннях, визначених 
-                <span class="cross-link">
-                    Законом України "Про електронну комерцію"
-                    <span class="tooltip"><strong>Закон № 675-VIII:</strong> "Електронна комерція - відносини, спрямовані на отримання прибутку з використанням інформаційно-телекомунікаційних систем..."</span>
-                </span>.
-            </p>
-
-            <h2>Стаття 2. Сфера дії</h2>
-            <p>2.1. Зміна положень цього Кодексу може здійснюватися виключно шляхом внесення змін до цього Кодексу.</p>
-        </main>
-
-        <aside class="sidebar ai-box">
-            <div class="ai-title">✨ ШІ-Перекладач</div>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Натисніть кнопку, щоб нейромережа пояснила цю статтю простою мовою.</p>
-            
-            <button class="ai-btn" onclick="toggleAI()">Коротка суть статті</button>
-            
-            <div class="ai-result" id="ai-text">
-                <strong>Простими словами:</strong><br><br>
-                Це головний документ щодо податків. Ніхто не може придумати новий податок або змінити старий, не вписавши це правило прямо в цей кодекс.
+        <div class="menu-grid">
+            <div class="menu-btn" onclick="alert('Відкриття Конституції...')">
+                <span style="font-size:3rem; display:block; margin-bottom:10px;">📜</span>
+                <span style="font-size:1.25rem; font-weight:600;">Конституція України</span>
+                <div style="margin-top: 15px; width: 100%; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px;">
+                        Остання редакція: <b style="color: var(--text-main);">01.01.2026</b>
+                    </div>
+                    <div style="font-size: 0.85rem; font-weight: 800; color: var(--success); background: rgba(16, 185, 129, 0.1); padding: 4px; border-radius: 6px;">
+                        ✅ Чинна
+                    </div>
+                </div>
             </div>
-        </aside>
 
+            <div class="menu-btn" onclick="alert('Відкриття Податкового кодексу...')">
+                <span style="font-size:3rem; display:block; margin-bottom:10px;">💼</span>
+                <span style="font-size:1.25rem; font-weight:600;">Податковий кодекс</span>
+                <div style="margin-top: 15px; width: 100%; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px;">
+                        Остання редакція: <b style="color: var(--text-main);">05.03.2026</b>
+                    </div>
+                    <div style="font-size: 0.85rem; font-weight: 800; color: #f59e0b; background: rgba(245, 158, 11, 0.1); padding: 4px; border-radius: 6px;">
+                        ⚠️ Є нові зміни
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-btn" onclick="alert('Відкриття КЗпП...')">
+                <span style="font-size:3rem; display:block; margin-bottom:10px;">🤝</span>
+                <span style="font-size:1.25rem; font-weight:600;">Кодекс законів про працю</span>
+                <div style="margin-top: 15px; width: 100%; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px;">
+                        Остання редакція: <b style="color: var(--text-main);">12.02.2026</b>
+                    </div>
+                    <div style="font-size: 0.85rem; font-weight: 800; color: var(--success); background: rgba(16, 185, 129, 0.1); padding: 4px; border-radius: 6px;">
+                        ✅ Чинний
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-btn" onclick="openSettings()">
+                <span style="font-size:3rem; display:block; margin-bottom:15px;">⚙️</span>
+                <span style="font-size:1.25rem; font-weight:600;">Налаштування сайту</span>
+                <span style="display:inline-block; margin-top:10px; font-size: 0.75rem; color: var(--text-muted); border: 1px solid var(--text-muted); padding: 2px 8px; border-radius: 4px;">
+                    Зовнішній вигляд
+                </span>
+            </div>
+            
+        </div>
+
+        <div id="timer-container" style="display: block; margin-top: 30px; text-align: center;">
+            <div style="color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">
+                Через скільки закінчиться сесія
+            </div>
+            
+            <div class="timer-wrapper">
+                <div class="timer-box">
+                    <span class="t-val" id="t-d">00</span>
+                    <span class="t-label">ДНІ</span>
+                </div>
+                <div class="timer-box">
+                    <span class="t-val" id="t-h">00</span>
+                    <span class="t-label">ГОД</span>
+                </div>
+                <div class="timer-box">
+                    <span class="t-val" id="t-m">00</span>
+                    <span class="t-label">МИН</span>
+                </div>
+                <div class="timer-box">
+                    <span class="t-val" id="t-s">00</span>
+                    <span class="t-label">СЕК</span>
+                </div>
+            </div>
+            <div id="timer-expired" style="display: none; color: var(--danger); font-weight: 800; margin-top: 15px; letter-spacing: 1px;">
+                ВРЕМЯ ИСТЕКЛО
+            </div>
+        </div>
     </div>
 
-    <script>
-        // Подтягиваем сохраненную тему (темную/светлую) из первого файла
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('siteTheme') || 'default';
-            document.body.setAttribute('data-theme', savedTheme);
-            
-            const isGlow = localStorage.getItem('glowEffect') !== 'false';
-            if (!isGlow) {
-                document.documentElement.style.setProperty('--primary-glow', 'rgba(0,0,0,0)');
-            }
-        });
+    <div id="settings-modal" class="modal-overlay">
+        <div class="settings-panel">
+            <div class="settings-header">
+                <h2 style="margin:0;">Налаштування</h2>
+                <button class="close-btn" onclick="closeSettings()">×</button>
+            </div>
 
-        // Функция открытия/закрытия подсказки ИИ
-        function toggleAI() {
-            const aiText = document.getElementById('ai-text');
-            if (aiText.style.display === 'block') {
-                aiText.style.display = 'none';
+            <p style="color:var(--text-muted); margin-bottom:10px;">Оберіть тему:</p>
+            <div class="theme-options">
+                <div class="theme-btn t-default active" onclick="setTheme('default')">Стандарт</div>
+                <div class="theme-btn t-black" onclick="setTheme('black')">Night</div>
+                <div class="theme-btn t-light" onclick="setTheme('light')">Light</div>
+            </div>
+
+            <div class="toggle-row">
+                <span>Ефект світіння (Glow)</span>
+                <label class="switch">
+                    <input type="checkbox" id="glow-toggle" checked="" onchange="toggleGlow()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <button onclick="closeSettings()" style="width:100%; margin-top:20px; padding:12px; background:rgba(255,255,255,0.05); color:var(--text-main); border:1px solid rgba(255,255,255,0.1); border-radius:10px; cursor:pointer; font-weight:bold; transition: 0.2s;">Зберегти та закрити</button>
+        </div>
+    </div>
+
+<script>
+    // === СКРИПТ БЕЗ ИЗМЕНЕНИЙ ЛОГИКИ (ТВОЙ ОРИГИНАЛ, ТОЛЬКО ОБНОВИЛ ТАЙМЕР НА 30 ДНЕЙ) ===
+    let timerInterval = null;
+
+    function initApp() {
+        // Устанавливаем таймер на 30 дней вперед от текущего момента
+        const now = new Date().getTime();
+        const expiryTime = now + (30 * 24 * 60 * 60 * 1000); 
+
+        function updateTimer() {
+            const currentTime = new Date().getTime();
+            const diff = expiryTime - currentTime;
+
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById('t-d').innerText = days;
+                document.getElementById('t-h').innerText = hours < 10 ? '0' + hours : hours;
+                document.getElementById('t-m').innerText = minutes < 10 ? '0' + minutes : minutes;
+                document.getElementById('t-s').innerText = seconds < 10 ? '0' + seconds : seconds;
             } else {
-                aiText.style.display = 'block';
+                clearInterval(timerInterval);
+                const wrapper = document.querySelector('.timer-wrapper');
+                if(wrapper) wrapper.style.opacity = '0.3';
+                const msg = document.getElementById('timer-expired');
+                if(msg) msg.style.display = 'block';
             }
         }
-    </script>
+
+        updateTimer();
+        timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    // --- UI ЛОГИКА ---
+    function openSettings() { document.getElementById('settings-modal').style.display = 'flex'; }
+    function closeSettings() { document.getElementById('settings-modal').style.display = 'none'; }
+
+    function setTheme(themeName) {
+        document.body.setAttribute('data-theme', themeName);
+        localStorage.setItem('siteTheme', themeName);
+        document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
+        const activeBtn = document.querySelector(`.t-${themeName === 'default' ? 'default' : themeName}`);
+        if (activeBtn) activeBtn.classList.add('active');
+    }
+
+    function toggleGlow(save = true) {
+        const checkbox = document.getElementById('glow-toggle');
+        const root = document.documentElement;
+        root.style.setProperty('--primary-glow', checkbox.checked ? 'rgba(99, 102, 241, 0.5)' : 'rgba(0,0,0,0)');
+        if (save) localStorage.setItem('glowEffect', checkbox.checked);
+    }
+
+    // --- ЗАПУСК ---
+    document.addEventListener('DOMContentLoaded', () => {
+        initApp();
+        
+        const savedTheme = localStorage.getItem('siteTheme') || 'default';
+        setTheme(savedTheme);
+        
+        const isGlow = localStorage.getItem('glowEffect') !== 'false';
+        const glowToggle = document.getElementById('glow-toggle');
+        if (glowToggle) {
+            glowToggle.checked = isGlow;
+            toggleGlow(false);
+        }
+    });
+
+    // Закрытие настроек по клику поза панеллю
+    document.getElementById('settings-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'settings-modal') closeSettings();
+    });
+</script>
 </body>
 </html>
