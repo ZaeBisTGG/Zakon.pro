@@ -6,7 +6,7 @@
     <title>Zakon.pro | Закони України</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        /* --- СТИЛИ БЕЗ ИЗМЕНЕНИЙ (ТВОЙ ОРИГИНАЛ) --- */
+        /* --- БАЗОВЫЕ СТИЛИ --- */
         :root { 
             --primary: #6366f1; 
             --primary-glow: rgba(99, 102, 241, 0.5); 
@@ -48,13 +48,13 @@
             transition: background 0.5s ease, color 0.5s ease; 
         }
 
-        /* === НОВЫЕ СТИЛИ ДЛЯ ПОИСКА === */
+        /* --- ПОИСК И ШАПКА --- */
         header { width: 100%; max-width: 1000px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;}
         .search-bar { flex-grow: 1; max-width: 400px; position: relative; }
         .search-bar input { width: 100%; padding: 12px 20px; border-radius: 12px; border: 1px solid rgba(128, 128, 128, 0.2); background: var(--card-bg); color: var(--text-main); font-size: 1rem; outline: none; backdrop-filter: blur(10px); transition: 0.3s; box-sizing: border-box;}
         .search-bar input:focus { border-color: var(--primary); box-shadow: 0 0 15px var(--primary-glow); }
 
-        #app-content { width: 100%; max-width: 1000px; animation: fadeIn 0.6s ease-out; position: relative; z-index: 2; }
+        #app-content { width: 100%; max-width: 1000px; position: relative; z-index: 2; }
         h1 { text-align: center; font-weight: 800; font-size: 2.5rem; margin: 0; background: linear-gradient(90deg, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; color: var(--text-main); text-transform: uppercase; letter-spacing: 1px; }
         [data-theme="light"] h1 { background: linear-gradient(90deg, #475569, #0f172a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
@@ -63,6 +63,7 @@
         .menu-btn { background: var(--card-bg); border: 1px solid rgba(128, 128, 128, 0.1); padding: 40px 25px; border-radius: 16px; text-align: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; backdrop-filter: blur(10px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
         .menu-btn:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 25px -5px var(--primary-glow); }
 
+        /* --- МОДАЛЬНОЕ ОКНО И НАСТРОЙКИ --- */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; animation: fadeIn 0.3s; }
         .settings-panel { background: var(--bg-grad-2); border: 1px solid var(--primary); width: 90%; max-width: 450px; padding: 30px; border-radius: 20px; box-shadow: 0 0 40px var(--primary-glow); position: relative; }
         .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
@@ -81,14 +82,24 @@
         input:checked + .slider { background-color: var(--primary); }
         input:checked + .slider:before { transform: translateX(24px); }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* === СТИЛИ ДЛЯ ТАЙМЕРА (БЕЗ ИЗМЕНЕНИЙ) === */
+        /* --- ТАЙМЕР --- */
         .timer-wrapper { display: flex; justify-content: center; gap: 12px; }
         .timer-box { background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 10px; min-width: 55px; display: flex; flex-direction: column; align-items: center; backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s; }
         .timer-box:hover { transform: translateY(-3px); border-color: var(--primary); }
         .t-val { font-size: 1.5rem; font-weight: 800; color: var(--primary); line-height: 1; font-variant-numeric: tabular-nums; text-shadow: 0 0 15px var(--primary-glow); }
         .t-label { font-size: 0.6rem; color: var(--text-muted); margin-top: 5px; font-weight: 600; }
+
+        /* === НОВЫЕ СТИЛИ ДЛЯ ПУСТОГО БЛАНКА === */
+        #document-view { display: none; animation: fadeIn 0.4s ease-out; width: 100%; }
+        .back-nav-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(128, 128, 128, 0.2); color: var(--text-main); padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; font-family: 'Inter', sans-serif; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px; backdrop-filter: blur(5px);}
+        .back-nav-btn:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--primary); box-shadow: 0 0 10px var(--primary-glow); }
+        
+        .blank-template { background: var(--card-bg); border: 1px solid rgba(128, 128, 128, 0.1); border-radius: 16px; padding: 40px; min-height: 50vh; backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); }
+        .doc-header { border-bottom: 1px solid rgba(128, 128, 128, 0.2); padding-bottom: 15px; margin-bottom: 20px; }
+        .doc-title { font-size: 2rem; font-weight: 800; margin: 0; color: var(--text-main); }
+        .doc-placeholder { color: var(--text-muted); text-align: center; margin-top: 10vh; font-size: 1.1rem; opacity: 0.7; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body data-theme="default">
@@ -101,89 +112,96 @@
     </header>
 
     <div id="app-content">
-        <div class="alert-box">
-            <span style="display:block; margin-bottom:15px; font-size:0.85rem; opacity:0.8;">Всі дані автоматично синхронізуються з Єдиним державним реєстром.</span>
-            <span style="color:var(--primary); font-weight:bold; font-size:1.1rem; display:block; text-transform:uppercase;">⚖️ Знайте свої права</span>
-            <p style="color:var(--text-muted); font-size:0.95rem; line-height:1.5;">Наш ШІ-помічник допоможе перекласти складний юридичний текст на зрозумілу людську мову.</p>
-        </div>
         
-        <div class="menu-grid">
-            <div class="menu-btn" onclick="alert('Відкриття Конституції...')">
-                <span style="font-size:3rem; display:block; margin-bottom:10px;">📜</span>
-                <span style="font-size:1.25rem; font-weight:600;">Конституція України</span>
-                <div style="margin-top: 15px; width: 100%; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
-                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px;">
-                        Остання редакція: <b style="color: var(--text-main);">01.01.2026</b>
-                    </div>
-                    <div style="font-size: 0.85rem; font-weight: 800; color: var(--success); background: rgba(16, 185, 129, 0.1); padding: 4px; border-radius: 6px;">
-                        ✅ Чинна
-                    </div>
-                </div>
-            </div>
-
-            <div class="menu-btn" onclick="alert('Відкриття Податкового кодексу...')">
-                <span style="font-size:3rem; display:block; margin-bottom:10px;">💼</span>
-                <span style="font-size:1.25rem; font-weight:600;">Податковий кодекс</span>
-                <div style="margin-top: 15px; width: 100%; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
-                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px;">
-                        Остання редакція: <b style="color: var(--text-main);">05.03.2026</b>
-                    </div>
-                    <div style="font-size: 0.85rem; font-weight: 800; color: #f59e0b; background: rgba(245, 158, 11, 0.1); padding: 4px; border-radius: 6px;">
-                        ⚠️ Є нові зміни
-                    </div>
-                </div>
-            </div>
-
-            <div class="menu-btn" onclick="alert('Відкриття КЗпП...')">
-                <span style="font-size:3rem; display:block; margin-bottom:10px;">🤝</span>
-                <span style="font-size:1.25rem; font-weight:600;">Кодекс законів про працю</span>
-                <div style="margin-top: 15px; width: 100%; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
-                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px;">
-                        Остання редакція: <b style="color: var(--text-main);">12.02.2026</b>
-                    </div>
-                    <div style="font-size: 0.85rem; font-weight: 800; color: var(--success); background: rgba(16, 185, 129, 0.1); padding: 4px; border-radius: 6px;">
-                        ✅ Чинний
-                    </div>
-                </div>
-            </div>
-
-            <div class="menu-btn" onclick="openSettings()">
-                <span style="font-size:3rem; display:block; margin-bottom:15px;">⚙️</span>
-                <span style="font-size:1.25rem; font-weight:600;">Налаштування сайту</span>
-                <span style="display:inline-block; margin-top:10px; font-size: 0.75rem; color: var(--text-muted); border: 1px solid var(--text-muted); padding: 2px 8px; border-radius: 4px;">
-                    Зовнішній вигляд
-                </span>
+        <div id="main-menu-view">
+            <div class="alert-box">
+                <span style="display:block; margin-bottom:15px; font-size:0.85rem; opacity:0.8;">Всі дані автоматично синхронізуються з Єдиним державним реєстром.</span>
+                <span style="color:var(--primary); font-weight:bold; font-size:1.1rem; display:block; text-transform:uppercase;">⚖️ Знайте свої права</span>
+                <p style="color:var(--text-muted); font-size:0.95rem; line-height:1.5;">Наш ШІ-помічник допоможе перекласти складний юридичний текст на зрозумілу людську мову.</p>
             </div>
             
+            <div class="menu-grid">
+                <div class="menu-btn" onclick="openDocument('Конституція України')">
+                    <span style="font-size:3rem; display:block; margin-bottom:10px;">📜</span>
+                    <span style="font-size:1.25rem; font-weight:600;">Конституція України</span>
+                    <div style="margin-top: 15px; width: 100%; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                        <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px;">
+                            Остання редакція: <b style="color: var(--text-main);">01.01.2026</b>
+                        </div>
+                        <div style="font-size: 0.85rem; font-weight: 800; color: var(--success); background: rgba(16, 185, 129, 0.1); padding: 4px; border-radius: 6px;">
+                            ✅ Чинна
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-btn" onclick="openDocument('Податковий кодекс України')">
+                    <span style="font-size:3rem; display:block; margin-bottom:10px;">💼</span>
+                    <span style="font-size:1.25rem; font-weight:600;">Податковий кодекс</span>
+                    <div style="margin-top: 15px; width: 100%; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                        <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px;">
+                            Остання редакція: <b style="color: var(--text-main);">05.03.2026</b>
+                        </div>
+                        <div style="font-size: 0.85rem; font-weight: 800; color: #f59e0b; background: rgba(245, 158, 11, 0.1); padding: 4px; border-radius: 6px;">
+                            ⚠️ Є нові зміни
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-btn" onclick="openDocument('Кодекс законів про працю')">
+                    <span style="font-size:3rem; display:block; margin-bottom:10px;">🤝</span>
+                    <span style="font-size:1.25rem; font-weight:600;">Кодекс законів про працю</span>
+                    <div style="margin-top: 15px; width: 100%; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                        <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px;">
+                            Остання редакція: <b style="color: var(--text-main);">12.02.2026</b>
+                        </div>
+                        <div style="font-size: 0.85rem; font-weight: 800; color: var(--success); background: rgba(16, 185, 129, 0.1); padding: 4px; border-radius: 6px;">
+                            ✅ Чинний
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-btn" onclick="openSettings()">
+                    <span style="font-size:3rem; display:block; margin-bottom:15px;">⚙️</span>
+                    <span style="font-size:1.25rem; font-weight:600;">Налаштування сайту</span>
+                    <span style="display:inline-block; margin-top:10px; font-size: 0.75rem; color: var(--text-muted); border: 1px solid var(--text-muted); padding: 2px 8px; border-radius: 4px;">
+                        Зовнішній вигляд
+                    </span>
+                </div>
+            </div>
+
+            <div id="timer-container" style="display: block; margin-top: 30px; text-align: center;">
+                <div style="color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">
+                    Через скільки закінчиться сесія
+                </div>
+                <div class="timer-wrapper">
+                    <div class="timer-box"><span class="t-val" id="t-d">00</span><span class="t-label">ДНІ</span></div>
+                    <div class="timer-box"><span class="t-val" id="t-h">00</span><span class="t-label">ГОД</span></div>
+                    <div class="timer-box"><span class="t-val" id="t-m">00</span><span class="t-label">МИН</span></div>
+                    <div class="timer-box"><span class="t-val" id="t-s">00</span><span class="t-label">СЕК</span></div>
+                </div>
+            </div>
         </div>
 
-        <div id="timer-container" style="display: block; margin-top: 30px; text-align: center;">
-            <div style="color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">
-                Через скільки закінчиться сесія
-            </div>
+        <div id="document-view">
+            <button class="back-nav-btn" onclick="closeDocument()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Назад до меню
+            </button>
             
-            <div class="timer-wrapper">
-                <div class="timer-box">
-                    <span class="t-val" id="t-d">00</span>
-                    <span class="t-label">ДНІ</span>
+            <div class="blank-template">
+                <div class="doc-header">
+                    <h2 class="doc-title" id="dynamic-doc-title">Назва документу</h2>
                 </div>
-                <div class="timer-box">
-                    <span class="t-val" id="t-h">00</span>
-                    <span class="t-label">ГОД</span>
+                <div class="doc-content">
+                    <div class="doc-placeholder">
+                        <span style="font-size: 3rem; display: block; margin-bottom: 15px; opacity: 0.5;">📄</span>
+                        Тут буде розташований текст закону...<br>
+                        <span style="font-size: 0.85rem;">(Бланк готовий до заповнення контентом)</span>
+                    </div>
                 </div>
-                <div class="timer-box">
-                    <span class="t-val" id="t-m">00</span>
-                    <span class="t-label">МИН</span>
-                </div>
-                <div class="timer-box">
-                    <span class="t-val" id="t-s">00</span>
-                    <span class="t-label">СЕК</span>
-                </div>
-            </div>
-            <div id="timer-expired" style="display: none; color: var(--danger); font-weight: 800; margin-top: 15px; letter-spacing: 1px;">
-                ВРЕМЯ ИСТЕКЛО
             </div>
         </div>
+
     </div>
 
     <div id="settings-modal" class="modal-overlay">
@@ -192,14 +210,12 @@
                 <h2 style="margin:0;">Налаштування</h2>
                 <button class="close-btn" onclick="closeSettings()">×</button>
             </div>
-
             <p style="color:var(--text-muted); margin-bottom:10px;">Оберіть тему:</p>
             <div class="theme-options">
                 <div class="theme-btn t-default active" onclick="setTheme('default')">Стандарт</div>
                 <div class="theme-btn t-black" onclick="setTheme('black')">Night</div>
                 <div class="theme-btn t-light" onclick="setTheme('light')">Light</div>
             </div>
-
             <div class="toggle-row">
                 <span>Ефект світіння (Glow)</span>
                 <label class="switch">
@@ -207,24 +223,38 @@
                     <span class="slider"></span>
                 </label>
             </div>
-            
             <button onclick="closeSettings()" style="width:100%; margin-top:20px; padding:12px; background:rgba(255,255,255,0.05); color:var(--text-main); border:1px solid rgba(255,255,255,0.1); border-radius:10px; cursor:pointer; font-weight:bold; transition: 0.2s;">Зберегти та закрити</button>
         </div>
     </div>
 
 <script>
-    // === СКРИПТ БЕЗ ИЗМЕНЕНИЙ ЛОГИКИ (ТВОЙ ОРИГИНАЛ, ТОЛЬКО ОБНОВИЛ ТАЙМЕР НА 30 ДНЕЙ) ===
-    let timerInterval = null;
+    // === ЛОГИКА ПЕРЕКЛЮЧЕНИЯ ЭКРАНОВ ===
+    function openDocument(docName) {
+        // Подставляем название нажатого закона в заголовок бланка
+        document.getElementById('dynamic-doc-title').innerText = docName;
+        // Скрываем меню, показываем бланк
+        document.getElementById('main-menu-view').style.display = 'none';
+        document.getElementById('document-view').style.display = 'block';
+        // Прокрутка наверх при открытии
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
+    function closeDocument() {
+        // Скрываем бланк, возвращаем меню
+        document.getElementById('document-view').style.display = 'none';
+        document.getElementById('main-menu-view').style.display = 'block';
+    }
+
+
+    // === ТАЙМЕР ===
+    let timerInterval = null;
     function initApp() {
-        // Устанавливаем таймер на 30 дней вперед от текущего момента
         const now = new Date().getTime();
         const expiryTime = now + (30 * 24 * 60 * 60 * 1000); 
 
         function updateTimer() {
             const currentTime = new Date().getTime();
             const diff = expiryTime - currentTime;
-
             if (diff > 0) {
                 const days = Math.floor(diff / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -243,12 +273,11 @@
                 if(msg) msg.style.display = 'block';
             }
         }
-
         updateTimer();
         timerInterval = setInterval(updateTimer, 1000);
     }
 
-    // --- UI ЛОГИКА ---
+    // --- UI НАСТРОЙКИ ---
     function openSettings() { document.getElementById('settings-modal').style.display = 'flex'; }
     function closeSettings() { document.getElementById('settings-modal').style.display = 'none'; }
 
@@ -270,10 +299,8 @@
     // --- ЗАПУСК ---
     document.addEventListener('DOMContentLoaded', () => {
         initApp();
-        
         const savedTheme = localStorage.getItem('siteTheme') || 'default';
         setTheme(savedTheme);
-        
         const isGlow = localStorage.getItem('glowEffect') !== 'false';
         const glowToggle = document.getElementById('glow-toggle');
         if (glowToggle) {
@@ -282,7 +309,6 @@
         }
     });
 
-    // Закрытие настроек по клику поза панеллю
     document.getElementById('settings-modal').addEventListener('click', (e) => {
         if (e.target.id === 'settings-modal') closeSettings();
     });
