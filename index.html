@@ -346,6 +346,10 @@
 
         /* Highlight for search */
         .highlight { background-color: #fbbf24; color: #000; border-radius: 2px; padding: 0 2px; box-shadow: 0 0 5px rgba(251, 191, 36, 0.5); }
+
+        /* Защита от выделения (визуальная) */
+        body { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+        input, textarea { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
     </style>
 </head>
 <body data-theme="default">
@@ -658,6 +662,34 @@
     </div>
 
 <script>
+    // === ЗАХИСТ ВІД КОПІЮВАННЯ ===
+    (function() {
+        // Блокування контекстного меню
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        
+        // Блокування клавіш розробника та копіювання
+        document.addEventListener('keydown', function(e) {
+            // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+S
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) || 
+                (e.ctrlKey && (e.key === 'u' || e.key === 's'))) {
+                e.preventDefault();
+                return false;
+            }
+            // Блокування Ctrl+C (Копіювання)
+            if (e.ctrlKey && e.key === 'c') {
+                e.preventDefault();
+                alert('Копіювання тексту заборонено!');
+            }
+        });
+
+        // Ловушка для консолі (м'яка версія)
+        setInterval(function() {
+            // Цей код ускладнює аналіз через DevTools
+            (function(){})['constructor']('debugger')();
+        }, 500);
+    })();
+
     // === БАЗА ДАНИХ ЗАКОНІВ ===
     const lawsData = {
         'Конституція України': `
@@ -1473,13 +1505,9 @@
 
     // === ADMIN LOGIN ===
     function adminLogin() {
-        const pass = prompt("Введіть пароль доступу:");
-        // Простая проверка (в реальном проекте лучше использовать сервер)
-        if(pass && pass.trim() !== "") { 
-            const expiry = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 години
-            localStorage.setItem('authData', JSON.stringify({ expiry: expiry }));
-            window.location.href = 'adm.html';
-        }
+        // Перенаправляємо на захищену сторінку. 
+        // Перевірка пароля тепер відбувається там (в adm.html) для безпеки.
+        window.location.href = 'adm.html';
     }
 
     // === ТАЙМЕР ===
