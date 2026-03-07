@@ -3,6 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Zakon.pro | Закони України">
+    <meta property="og:description" content="Інтерактивний довідник законів, кодексів та прав громадян. Швидкий пошук та офлайн доступ.">
+    <meta name="referrer" content="no-referrer">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <!-- Вкажіть тут ваше реальне посилання на GitHub Pages -->
+    <link rel="canonical" href="https://your-username.github.io/zakon-pro/">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://fonts.gstatic.com data:;">
     <title>Zakon.pro | Закони України</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -49,6 +59,10 @@
             display: flex; flex-direction: column; align-items: center; 
             transition: background 0.5s ease, color 0.5s ease;
             position: relative; 
+            /* --- ВИДІЛЕННЯ ТЕКСТУ ДОЗВОЛЕНО --- */
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            user-select: text;
         }
 
         /* --- ПОИСК И ШАПКА --- */
@@ -347,12 +361,109 @@
         /* Highlight for search */
         .highlight { background-color: #fbbf24; color: #000; border-radius: 2px; padding: 0 2px; box-shadow: 0 0 5px rgba(251, 191, 36, 0.5); }
 
-        /* Защита от выделения (визуальная) */
-        body { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+        /* Дозволити виділення тексту в полях вводу */
         input, textarea { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
+        input, textarea, .code-area { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%; height: 4px; background: transparent;
+            position: fixed; top: 0; left: 0; z-index: 10000;
+        }
+        .progress-bar {
+            height: 4px; background: var(--primary); width: 0%;
+            transition: width 0.1s; box-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        /* --- SITE LOCK SCREEN --- */
+        #site-lock-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-grad-2);
+            z-index: 99999;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            backdrop-filter: blur(20px);
+        }
+        .lock-card {
+            background: var(--card-bg); padding: 40px; border-radius: 20px;
+            border: 1px solid var(--primary); box-shadow: 0 0 50px var(--primary-glow);
+            text-align: center; max-width: 400px; width: 90%;
+        }
+
+        /* --- AI CHAT WIDGET --- */
+        .ai-fab {
+            position: fixed; bottom: 90px; right: 30px;
+            width: 50px; height: 50px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 4px 20px rgba(99, 102, 241, 0.6);
+            z-index: 99; transition: transform 0.3s;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        .ai-fab:hover { transform: scale(1.1) rotate(5deg); }
+        
+        .ai-window {
+            position: fixed; bottom: 100px; right: 30px;
+            width: 350px; height: 500px;
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            display: none; flex-direction: column;
+            z-index: 100; overflow: hidden;
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .ai-window.open { display: flex; }
+        
+        .ai-header {
+            padding: 15px; background: rgba(99, 102, 241, 0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .ai-messages {
+            flex: 1; overflow-y: auto; padding: 15px;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .ai-input-area {
+            padding: 15px; border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex; gap: 10px;
+        }
+        .ai-input {
+            flex: 1; background: rgba(0,0,0,0.05); border: none;
+            padding: 10px; border-radius: 10px; color: var(--text-main);
+            outline: none; font-family: 'Inter', sans-serif;
+        }
+        .ai-send {
+            background: var(--primary); color: white; border: none;
+            width: 40px; border-radius: 10px; cursor: pointer;
+        }
+        
+        .msg { padding: 10px 14px; border-radius: 12px; max-width: 80%; font-size: 0.9rem; line-height: 1.4; }
+        .msg-user { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 2px; }
+        .msg-ai { align-self: flex-start; background: rgba(128,128,128,0.1); color: var(--text-main); border-bottom-left-radius: 2px; }
+        .typing { font-size: 0.7rem; color: var(--text-muted); margin-left: 15px; display: none; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
     </style>
 </head>
 <body data-theme="default">
+    <div class="progress-container"><div class="progress-bar" id="myBar"></div></div>
+
+    <!-- SITE LOCK OVERLAY -->
+    <div id="site-lock-overlay">
+        <div class="lock-card">
+            <h2 style="margin-top:0; color:var(--text-main);">🔒 Вхід на сайт</h2>
+            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:20px;">Цей ресурс захищено паролем.</p>
+            <input type="password" id="site-pass" placeholder="Введіть пароль" style="width:100%; padding:12px; border-radius:10px; border:1px solid rgba(128,128,128,0.3); background:rgba(0,0,0,0.05); color:var(--text-main); margin-bottom:15px; outline:none; font-size:1rem; text-align:center;">
+            <button onclick="checkSitePassword()" style="width:100%; padding:12px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold; font-size:1rem; transition:0.2s;">Увійти</button>
+            <p id="site-login-msg" style="color:var(--danger); margin-top:15px; font-size:0.85rem; min-height:1.2em;"></p>
+        </div>
+    </div>
 
     <header>
         <div class="header-inner">
@@ -621,9 +732,38 @@
             </div>
         </div>
 
+        <footer style="text-align:center; margin-top:40px; padding:20px; color:var(--text-muted); font-size:0.85rem; opacity:0.8;">
+            <div style="font-weight:600; margin-bottom:5px;">&copy; 2026 Zakon.pro. Усі права захищені.</div>
+            <div style="margin-bottom: 10px; cursor: pointer; text-decoration: underline;" onclick="openTerms()">Умови користування (Terms of Service)</div>
+            <div>Копіювання матеріалів та автоматизований збір даних заборонено.</div>
+            <div style="margin-top: 20px; font-size: 0.75rem; opacity: 0.7; max-width: 800px; margin-left: auto; margin-right: auto; line-height: 1.5; border-top: 1px solid rgba(128,128,128,0.1); padding-top: 15px;">
+                Zakon.pro — незалежний інформаційний портал. Матеріали сайту не є офіційною юридичною консультацією. Законодавство може змінюватися, тому ми рекомендуємо перевіряти актуальність норм в офіційних джерелах. Адміністрація не несе відповідальності за наслідки використання інформації.
+            </div>
+        </footer>
+
     </div>
 
     <button class="scroll-top-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
+
+    <!-- AI CHAT WIDGET -->
+    <div class="ai-fab" onclick="toggleChat()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+    </div>
+
+    <div class="ai-window" id="ai-window">
+        <div class="ai-header">
+            <span style="font-weight:bold; display:flex; align-items:center; gap:8px;">🤖 AI Юрист <span style="font-size:0.7em; background:var(--success); color:#fff; padding:1px 5px; border-radius:4px;">BETA</span></span>
+            <button onclick="toggleChat()" style="background:none; border:none; color:var(--text-muted); cursor:pointer;">×</button>
+        </div>
+        <div class="ai-messages" id="ai-messages">
+            <div class="msg msg-ai">Привіт! Я ваш віртуальний юридичний помічник. Запитайте мене про закони, штрафи або ваші права.</div>
+        </div>
+        <div class="typing" id="ai-typing">AI друкує...</div>
+        <div class="ai-input-area">
+            <input type="text" class="ai-input" id="ai-input" placeholder="Напишіть запитання..." onkeypress="if(event.key==='Enter') sendMessage()">
+            <button class="ai-send" onclick="sendMessage()">➤</button>
+        </div>
+    </div>
 
     <div id="settings-modal" class="modal-overlay">
         <div class="settings-panel">
@@ -656,39 +796,94 @@
 
             <button onclick="closeSettings()" style="width:100%; margin-top:20px; padding:12px; background:rgba(255,255,255,0.05); color:var(--text-main); border:1px solid rgba(255,255,255,0.1); border-radius:10px; cursor:pointer; font-weight:bold; transition: 0.2s;">Зберегти та закрити</button>
             <div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; text-align: center;">
+                <span style="font-size: 0.8rem; color: var(--text-muted); cursor: pointer; text-decoration: underline; margin-right: 15px;" onclick="openTerms()">Умови користування</span>
                 <span style="font-size: 0.8rem; color: var(--text-muted); cursor: pointer; text-decoration: underline;" onclick="adminLogin()">Вхід для адміністраторів</span>
             </div>
         </div>
     </div>
 
-<script>
-    // === ЗАХИСТ ВІД КОПІЮВАННЯ ===
-    (function() {
-        // Блокування контекстного меню
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        
-        // Блокування клавіш розробника та копіювання
-        document.addEventListener('keydown', function(e) {
-            // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+S
-            if (e.key === 'F12' || 
-                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) || 
-                (e.ctrlKey && (e.key === 'u' || e.key === 's'))) {
-                e.preventDefault();
-                return false;
-            }
-            // Блокування Ctrl+C (Копіювання)
-            if (e.ctrlKey && e.key === 'c') {
-                e.preventDefault();
-                alert('Копіювання тексту заборонено!');
-            }
-        });
+    <div id="terms-modal" class="modal-overlay">
+        <div class="settings-panel" style="max-width: 600px;">
+            <div class="settings-header">
+                <h2 style="margin:0;">Умови користування</h2>
+                <button class="close-btn" onclick="closeTerms()">×</button>
+            </div>
+            <div style="overflow-y: auto; max-height: 60vh; color: var(--text-main); font-size: 0.9rem; line-height: 1.6; text-align: left;">
+                <p><strong>1. Авторське право (Copyright)</strong><br>
+                © 2026 Zakon.pro. Усі права захищені. Весь контент на цьому сайті (тексти, код, дизайн, бази даних) є об'єктом інтелектуальної власності. Будь-яке копіювання, відтворення або розповсюдження матеріалів без письмового дозволу правовласника заборонено і може стати підставою для подачі скарги DMCA та судового позову.</p>
+                
+                <p><strong>2. Заборона автоматизованого збору даних (No Scraping)</strong><br>
+                Використання будь-яких автоматизованих систем, роботів, скраперів, парсерів, павуків або інших скриптів для збору, індексації, вилучення або аналізу даних з цього веб-сайту суворо заборонено. Ми моніторимо трафік і блокуємо IP-адреси, що порушують цю умову.</p>
+                
+                <p><strong>3. Відмова від відповідальності</strong><br>
+                Матеріали сайту надаються "як є" виключно з інформаційною метою. Адміністрація не несе відповідальності за можливі неточності або наслідки використання інформації.</p>
+            </div>
+            <button onclick="closeTerms()" style="width:100%; margin-top:20px; padding:12px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold;">Зрозуміло</button>
+        </div>
+    </div>
 
-        // Ловушка для консолі (м'яка версія)
-        setInterval(function() {
-            // Цей код ускладнює аналіз через DevTools
-            (function(){})['constructor']('debugger')();
-        }, 500);
+<script>
+    // Захист від вбудовування в iframe (Clickjacking)
+    (function() {
+        try { if (window.self !== window.top) window.top.location = window.self.location; } catch (e) {}
     })();
+
+    // === ЛОГІКА ПАРОЛЯ НА САЙТ ===
+    // Хеш пароля "1234" (SHA-256). 
+    // Згенерувати свій: https://xorbin.com/tools/sha256-hash-calculator
+    const SITE_HASH = "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"; 
+
+    async function checkSitePassword() {
+        const input = document.getElementById('site-pass').value;
+        const msg = document.getElementById('site-login-msg');
+        
+        if (!input) return;
+
+        try {
+            const msgBuffer = new TextEncoder().encode(input);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+            if (hashHex === SITE_HASH) {
+                document.getElementById('site-lock-overlay').style.display = 'none';
+                
+                // Встановлюємо сесію на 1 тиждень (7 днів)
+                const expiryTime = Date.now() + (7 * 24 * 60 * 60 * 1000);
+                localStorage.setItem('site_unlocked', 'true');
+                localStorage.setItem('sessionExpiry', expiryTime);
+                
+                // Запускаємо таймер
+                if (typeof initApp === 'function') initApp();
+            } else {
+                msg.innerText = "Невірний пароль.";
+                setTimeout(() => msg.innerText = '', 2000);
+            }
+        } catch (e) {
+            // Якщо браузер старий або блокує crypto
+            msg.innerText = "Помилка криптографії. Використовуйте сучасний браузер.";
+            msg.innerText = "Помилка: Браузер блокує криптографію. Відкрийте сайт через HTTPS або localhost (не як файл).";
+        }
+    }
+    
+    // Перевірка сесії (щоб не вводити пароль при оновленні сторінки)
+    const savedExpiry = localStorage.getItem('sessionExpiry');
+    const isUnlocked = localStorage.getItem('site_unlocked');
+    const now = Date.now();
+
+    if (isUnlocked === 'true' && savedExpiry && now < parseInt(savedExpiry)) {
+        document.getElementById('site-lock-overlay').style.display = 'none';
+    } else {
+        // Якщо час вийшов або не входили - блокуємо
+        localStorage.removeItem('site_unlocked');
+        localStorage.removeItem('sessionExpiry');
+        document.getElementById('site-lock-overlay').style.display = 'flex';
+    }
+    
+    // Enter key support
+    document.getElementById('site-pass').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') checkSitePassword();
+    });
 
     // === БАЗА ДАНИХ ЗАКОНІВ ===
     const lawsData = {
@@ -1299,21 +1494,197 @@
         `,
         'Кодекс України про адміністративні правопорушення': `
             <div class="law-section">
-                <h3>Розділ I. Загальні положення</h3>
-                <div class="law-item"><strong>Стаття 1. Завдання Кодексу</strong><p>Завданням Кодексу України про адміністративні правопорушення є охорона прав і свобод громадян, власності, конституційного ладу України, прав і законних інтересів підприємств, установ і організацій, встановленого правопорядку, зміцнення законності, запобігання правопорушенням, виховання громадян у дусі точного і неухильного додержання Конституції і законів України.</p></div>
-                <div class="law-item"><strong>Стаття 9. Поняття адміністративного правопорушення</strong><p>Адміністративним правопорушенням (проступком) визнається протиправна, винна (умисна або необережна) дія чи бездіяльність, яка посягає на громадський порядок, власність, права і свободи громадян, на встановлений порядок управління і за яку законом передбачено адміністративну відповідальність.</p></div>
+                <h3>Розділ I. Загальні положення (Ст. 1–8)</h3>
+                <div class="law-item"><strong>Стаття 1. Завдання Кодексу</strong><p>Завданням Кодексу є охорона прав і свобод громадян, власності, конституційного ладу, прав підприємств, встановленого правопорядку, зміцнення законності, запобігання правопорушенням.</p></div>
+                <div class="law-item"><strong>Стаття 2. Законодавство про адміністративні правопорушення</strong><p>Законодавство складається з цього Кодексу та інших законів України. Питання відповідальності за порушення, не врегульовані Кодексом, можуть регулюватися іншими актами.</p></div>
+                <div class="law-item"><strong>Стаття 3. Повноваження місцевих рад</strong><p>Сільські, селищні, міські ради можуть приймати рішення щодо боротьби зі стихійним лихом і епідеміями, за порушення яких передбачено адміністративну відповідальність.</p></div>
+                <div class="law-item"><strong>Стаття 4. Компетенція органів виконавчої влади</strong><p>Органи виконавчої влади можуть встановлювати правила, за порушення яких настає адміністративна відповідальність, у межах своєї компетенції.</p></div>
+                <div class="law-item"><strong>Стаття 5. Повноваження органів місцевого самоврядування</strong><p>Органи місцевого самоврядування забезпечують охорону громадського порядку, за порушення якого законом передбачено адміністративну відповідальність.</p></div>
+                <div class="law-item"><strong>Стаття 6. Запобігання адміністративним правопорушенням</strong><p>Органи державної влади, місцевого самоврядування, громадські організації розробляють і здійснюють заходи, спрямовані на запобігання правопорушенням.</p></div>
+                <div class="law-item"><strong>Стаття 7. Забезпечення законності</strong><p>Ніхто не може бути підданий заходу впливу в зв'язку з адміністративним правопорушенням інакше як на підставах і в порядку, встановлених законом.</p></div>
+                <div class="law-item"><strong>Стаття 8. Чинність закону</strong><p>Особа, яка вчинила адміністративне правопорушення, підлягає відповідальності на підставі закону, що діє під час і за місцем вчинення правопорушення. Закони, що пом'якшують відповідальність, мають зворотну силу.</p></div>
             </div>
+
             <div class="law-section">
-                <h3>Розділ II. Адміністративне стягнення</h3>
-                <div class="law-item"><strong>Стаття 23. Мета адміністративного стягнення</strong><p>Адміністративне стягнення є мірою відповідальності і застосовується з метою виховання особи, яка вчинила адміністративне правопорушення, в дусі додержання законів України, поваги до правил співжиття, а також запобігання вчиненню нових правопорушень як самим правопорушником, так і іншими особами.</p></div>
-                <div class="law-item"><strong>Стаття 24. Види адміністративних стягнень</strong><p>За вчинення адміністративних правопорушень можуть застосовуватись такі адміністративні стягнення: 1) попередження; 2) штраф; 3) оплатне вилучення предмета; 4) конфіскація; 5) позбавлення спеціального права; 6) громадські роботи; 7) виправні роботи; 8) адміністративний арешт.</p></div>
+                <h3>Розділ II. Адміністративне правопорушення і відповідальність (Ст. 9–22)</h3>
+                <div class="law-item"><strong>Стаття 9. Поняття адміністративного правопорушення</strong><p>Адміністративним правопорушенням (проступком) визнається протиправна, винна (умисна або необережна) дія чи бездіяльність, яка посягає на громадський порядок, власність, права і свободи громадян, на встановлений порядок управління.</p></div>
+                <div class="law-item"><strong>Стаття 10. Вчинення правопорушення умисно</strong><p>Правопорушення визнається вчиненим умисно, якщо особа усвідомлювала протиправний характер своєї дії чи бездіяльності, передбачала її шкідливі наслідки і бажала їх або свідомо допускала.</p></div>
+                <div class="law-item"><strong>Стаття 11. Вчинення правопорушення з необережності</strong><p>Правопорушення визнається вчиненим з необережності, якщо особа передбачала можливість настання шкідливих наслідків, але легковажно розраховувала на їх відвернення або не передбачала їх, хоча повинна була.</p></div>
+                <div class="law-item"><strong>Стаття 12. Вік адміністративної відповідальності</strong><p>Адміністративній відповідальності підлягають особи, які досягли на момент вчинення правопорушення шістнадцятирічного віку.</p></div>
+                <div class="law-item"><strong>Стаття 13. Відповідальність неповнолітніх</strong><p>До осіб віком від 16 до 18 років, які вчинили адміністративні правопорушення, застосовуються заходи впливу (ст. 24-1), крім випадків злісної непокори, дрібного хуліганства тощо.</p></div>
+                <div class="law-item"><strong>Стаття 14. Відповідальність посадових осіб</strong><p>Посадові особи підлягають адміністративній відповідальності за адміністративні правопорушення, зв'язані з недодержанням установлених правил, забезпечення виконання яких входить до їх службових обов'язків.</p></div>
+                <div class="law-item"><strong>Стаття 14-1. Відповідальність власників транспортних засобів</strong><p>До адміністративної відповідальності за правопорушення у сфері забезпечення безпеки дорожнього руху, зафіксовані в автоматичному режимі, притягаються відповідальні особи (власники ТЗ).</p></div>
+                <div class="law-item"><strong>Стаття 15. Відповідальність військовослужбовців</strong><p>Військовослужбовці несуть відповідальність за адміністративні правопорушення за дисциплінарними статутами. За порушення правил дорожнього руху, полювання, рибальства — на загальних підставах.</p></div>
+                <div class="law-item"><strong>Стаття 16. Відповідальність іноземців</strong><p>Іноземці і особи без громадянства, які перебувають на території України, підлягають адміністративній відповідальності на загальних підставах з громадянами України.</p></div>
+                <div class="law-item"><strong>Стаття 17. Обставини, що виключають провадження</strong><p>Особа, яка діяла в стані крайньої необхідності, необхідної оборони або яка була в стані неосудності, не підлягає адміністративній відповідальності.</p></div>
+                <div class="law-item"><strong>Стаття 18. Крайня необхідність</strong><p>Не є адміністративним правопорушенням дія, вчинена для усунення небезпеки, яка загрожує державному або громадському порядку, якщо ця небезпека не могла бути усунута іншими засобами і заподіяна шкода є менш значною, ніж відвернена.</p></div>
+                <div class="law-item"><strong>Стаття 19. Необхідна оборона</strong><p>Не є адміністративним правопорушенням дія, вчинена в стані необхідної оборони, тобто при захисті прав та інтересів від протиправного посягання, якщо при цьому не було допущено перевищення меж необхідної оборони.</p></div>
+                <div class="law-item"><strong>Стаття 20. Неосудність</strong><p>Не підлягає адміністративній відповідальності особа, яка під час вчинення дії перебувала в стані неосудності (не могла усвідомлювати свої дії або керувати ними через хворобу).</p></div>
+                <div class="law-item"><strong>Стаття 21. Передача матеріалів на розгляд громадської організації</strong><p>Особа, яка вчинила правопорушення, може бути звільнена від відповідальності з передачею матеріалів на розгляд громадської організації або трудового колективу (застаріла норма, застосовується рідко).</p></div>
+                <div class="law-item"><strong>Стаття 22. Звільнення від відповідальності при малозначності</strong><p>При малозначності вчиненого адміністративного правопорушення орган (посадова особа) може звільнити порушника від адміністративної відповідальності і обмежитись усним зауваженням.</p></div>
+            </div>
+
+            <div class="law-section">
+                <h3>Розділ III. Адміністративне стягнення (Ст. 23–32-1)</h3>
+                <div class="law-item"><strong>Стаття 23. Мета адміністративного стягнення</strong><p>Адміністративне стягнення є мірою відповідальності і застосовується з метою виховання особи, а також запобігання вчиненню нових правопорушень.</p></div>
+                <div class="law-item"><strong>Стаття 24. Види адміністративних стягнень</strong><p>Види стягнень: 1) попередження; 2) штраф; 3) оплатне вилучення предмета; 4) конфіскація; 5) позбавлення спеціального права; 5-1) громадські роботи; 5-2) виправні роботи; 6) адміністративний арешт; 7) арешт з утриманням на гауптвахті.</p></div>
+                <div class="law-item"><strong>Стаття 24-1. Заходи впливу до неповнолітніх</strong><p>До неповнолітніх (16-18 років) можуть застосовуватись: зобов'язання попросити вибачення; попередження; догана або сувора догана; передача під нагляд батькам.</p></div>
+                <div class="law-item"><strong>Стаття 25. Основні і додаткові стягнення</strong><p>Оплатне вилучення, конфіскація предметів та позбавлення права керування можуть застосовуватись як основні, так і додаткові стягнення. Інші стягнення — тільки як основні.</p></div>
+                <div class="law-item"><strong>Стаття 26. Попередження</strong><p>Попередження як захід адміністративного стягнення виноситься в письмовій формі (або фіксується іншим встановленим способом).</p></div>
+                <div class="law-item"><strong>Стаття 27. Штраф</strong><p>Штраф є грошовим стягненням, що накладається на громадян і посадових осіб за адміністративні правопорушення.</p></div>
+                <div class="law-item"><strong>Стаття 28. Оплатне вилучення предмета</strong><p>Полягає в примусовому вилученні предмета, який став знаряддям вчинення або об'єктом правопорушення, з наступною реалізацією і передачею вирученої суми колишньому власникові (за вирахуванням витрат).</p></div>
+                <div class="law-item"><strong>Стаття 29. Конфіскація предмета</strong><p>Конфіскація предмета, який став знаряддям вчинення або об'єктом адміністративного правопорушення, полягає в примусовій безоплатній передачі цього предмета у власність держави.</p></div>
+                <div class="law-item"><strong>Стаття 30. Позбавлення спеціального права</strong><p>Позбавлення наданого даному громадянинові спеціального права (керування транспортними засобами, полювання) застосовується на строк до трьох років (за грубе або систематичне порушення порядку користування цим правом).</p></div>
+                <div class="law-item"><strong>Стаття 30-1. Громадські роботи</strong><p>Полягають у виконанні особою у вільний від роботи чи навчання час безоплатних суспільно корисних робіт. Призначаються на строк від 20 до 60 годин.</p></div>
+                <div class="law-item"><strong>Стаття 31. Виправні роботи</strong><p>Застосовуються на строк до 2 місяців за місцем роботи особи з відрахуванням до 20% заробітку в дохід держави.</p></div>
+                <div class="law-item"><strong>Стаття 31-1. Суспільно корисні роботи</strong><p>Полягають у виконанні оплачуваних робіт особою, яка вчинила правопорушення, пов'язане з несплатою аліментів. Призначаються на строк від 120 до 360 годин.</p></div>
+                <div class="law-item"><strong>Стаття 32. Адміністративний арешт</strong><p>Встановлюється у виняткових випадках на строк до 15 діб. Призначається судом.</p></div>
+                <div class="law-item"><strong>Стаття 32-1. Арешт з утриманням на гауптвахті</strong><p>Застосовується до військовослужбовців та інших осіб, на яких поширюється дія дисциплінарних статутів, на строк до 10 діб.</p></div>
+            </div>
+
+            <div class="law-section">
+                <h3>Розділ IV. Накладення адміністративного стягнення (Ст. 33–40)</h3>
+                <div class="law-item"><strong>Стаття 33. Загальні правила накладення стягнення</strong><p>Стягнення накладається з урахуванням характеру правопорушення, особи порушника, ступеня його вини, майнового стану, обставин, що пом'якшують і обтяжують відповідальність.</p></div>
+                <div class="law-item"><strong>Стаття 34. Обставини, що пом'якшують відповідальність</strong><p>Щире розкаяння; відвернення шкідливих наслідків; добровільне відшкодування збитків; вчинення правопорушення під впливом сильного душевного хвилювання, вагітною жінкою або жінкою, яка має дитину до одного року.</p></div>
+                <div class="law-item"><strong>Стаття 35. Обставини, що обтяжують відповідальність</strong><p>Продовження протиправної поведінки; повторне вчинення однорідного правопорушення; втягнення неповнолітнього; вчинення правопорушення групою осіб, в умовах стихійного лиха або у стані сп'яніння.</p></div>
+                <div class="law-item"><strong>Стаття 36. Накладення стягнень при вчиненні кількох правопорушень</strong><p>Якщо особа вчинила кілька правопорушень, стягнення накладається в межах санкції, встановленої за більш серйозне правопорушення.</p></div>
+                <div class="law-item"><strong>Стаття 37. Обчислення строків стягнення</strong><p>Строк адміністративного арешту обчислюється добами, виправних робіт — місяцями, позбавлення спеціального права — роками, місяцями або днями.</p></div>
+                <div class="law-item"><strong>Стаття 38. Строки накладення стягнення</strong><p>Стягнення може бути накладено не пізніш як через 2 місяці з дня вчинення правопорушення (або 3 місяці для корупційних, але не пізніше 2 років з дня вчинення).</p></div>
+                <div class="law-item"><strong>Стаття 39. Строк, після якого особа вважається непідданою стягненню</strong><p>Якщо особа протягом року з дня закінчення виконання стягнення не вчинила нового правопорушення, вона вважається такою, що не була піддана адміністративному стягненню.</p></div>
+                <div class="law-item"><strong>Стаття 40. Покладення обов'язку відшкодувати шкоду</strong><p>Якщо правопорушенням заподіяно майнову шкоду, орган, що накладає стягнення, може одночасно вирішити питання про її відшкодування винним.</p></div>
+            </div>
+
+            <div class="law-section">
+                <h3>Особлива частина. Глава 5. Охорона праці та здоров'я (Ст. 41–46)</h3>
+                <div class="law-item"><strong>Стаття 41. Порушення вимог законодавства про працю</strong><p>Порушення термінів виплати зарплати, виплата її не в повному обсязі, а також інші порушення законодавства про працю тягнуть за собою штраф.</p></div>
+                <div class="law-item"><strong>Стаття 41-1. Ухилення від участі в переговорах</strong><p>Ухилення представників сторін від участі в переговорах щодо укладення, зміни або доповнення колективного договору, угоди.</p></div>
+                <div class="law-item"><strong>Стаття 41-2. Порушення чи невиконання колективного договору</strong><p>Порушення чи невиконання зобов'язань щодо колективного договору, угоди особами, які представляють власників або уповноважені ними органи чи профспілки.</p></div>
+                <div class="law-item"><strong>Стаття 41-3. Ненадання інформації для колективних переговорів</strong><p>Ненадання інформації, необхідної для ведення колективних переговорів і здійснення контролю за виконанням колективних договорів.</p></div>
+                <div class="law-item"><strong>Стаття 42. Порушення санітарних норм</strong><p>Порушення санітарних норм і правил тягне за собою накладення штрафу на громадян і посадових осіб.</p></div>
+                <div class="law-item"><strong>Стаття 42-1. Куріння у заборонених місцях</strong><p>Куріння тютюнових виробів у місцях, де це заборонено законом, а також в інших місцях, визначених рішенням відповідної сільської, селищної, міської ради.</p></div>
+                <div class="law-item"><strong>Стаття 42-2. Заготівля або збут радіоактивно забрудненої продукції</strong><p>Заготівля, переробка або збут продукції, забрудненої радіоактивними речовинами понад допустимі рівні.</p></div>
+                <div class="law-item"><strong>Стаття 42-4. Продаж лікарських засобів без рецепта</strong><p>Продаж лікарських засобів в аптечних закладах без рецепта у заборонених законодавством випадках.</p></div>
+                <div class="law-item"><strong>Стаття 43. Порушення правил щодо дорогоцінних металів</strong><p>Порушення встановленого порядку видобування, виробництва, використання та реалізації дорогоцінних металів і дорогоцінного каміння.</p></div>
+                <div class="law-item"><strong>Стаття 44. Незаконні дії з наркотичними засобами</strong><p>Виробництво, придбання, зберігання, перевезення наркотичних засобів без мети збуту в невеликих розмірах тягнуть за собою штраф, громадські роботи або арешт.</p></div>
+                <div class="law-item"><strong>Стаття 44-1. Ухилення від медичного огляду</strong><p>Ухилення особи, яка зловживає наркотичними засобами або психотропними речовинами, від медичного огляду.</p></div>
+                <div class="law-item"><strong>Стаття 44-3. Порушення правил щодо карантину</strong><p>Порушення правил щодо карантину людей, санітарно-гігієнічних, санітарно-протиепідемічних правил і норм тягне за собою накладення штрафу.</p></div>
+                <div class="law-item"><strong>Стаття 45. Ухилення від реєстрації релігійної організації</strong><p>Ухилення керівників або уповноважених осіб релігійної організації від її реєстрації в державних органах тягне за собою накладення штрафу.</p></div>
+                <div class="law-item"><strong>Стаття 46. Ухилення від медичного огляду чи обстеження</strong><p>Ухилення особи, хворої на венеричну хворобу, від лікування, або особи, яка була в контакті з хворим, від медичного огляду, тягне за собою накладення штрафу.</p></div>
+                <div class="law-item"><strong>Стаття 46-1. Порушення вимог радіаційної безпеки</strong><p>Порушення вимог режиму радіаційної безпеки в місцевостях, що зазнали радіоактивного забруднення.</p></div>
+            </div>
+
+            <div class="law-section">
+                <h3>Глава 6. Правопорушення, що посягають на власність (Ст. 47–51-2)</h3>
+                <div class="law-item"><strong>Стаття 47. Порушення права на житло</strong><p>Порушення порядку взяття на облік громадян, які потребують поліпшення житлових умов, зняття з обліку та надання житлових приміщень.</p></div>
+                <div class="law-item"><strong>Стаття 48. Порушення права власності на природні ресурси</strong><p>Порушення права державної власності на надра, води, ліси, тваринний світ.</p></div>
+                <div class="law-item"><strong>Стаття 49. Незаконне виготовлення, зберігання, збут підакцизних товарів</strong><p>Незаконне придбання з метою збуту або зберігання з цією метою, а так само збут чи транспортування з цією метою незаконно виготовлених алкогольних напоїв, тютюнових виробів або інших підакцизних товарів тягне за собою накладення штрафу з конфіскацією таких товарів та обладнання.</p></div>
+                <div class="law-item"><strong>Стаття 50. Ухилення від повернення виручки в іноземній валюті</strong><p>Ухилення від повернення у встановлені строки виручки в іноземній валюті за реалізовані на експорт товари (роботи, послуги).</p></div>
+                <div class="law-item"><strong>Стаття 51. Дрібне викрадення чужого майна</strong><p>Дрібне викрадення (крадіжка, шахрайство, привласнення) тягне за собою штраф, виправні роботи або арешт. Викрадення є дрібним, якщо вартість майна не перевищує 0,2 неоподатковуваного мінімуму доходів громадян (з урахуванням податкової соціальної пільги).</p></div>
+                <div class="law-item"><strong>Стаття 51-1. Порушення безпеки на транспорті</strong><p>Пошкодження залізничної колії, захисних лісонасаджень, снігозахисних загороджень та інших об'єктів залізничного транспорту.</p></div>
+                <div class="law-item"><strong>Стаття 51-2. Порушення прав на об'єкт права інтелектуальної власності</strong><p>Незаконне використання об'єкта права інтелектуальної власності (літературного чи художнього твору, комп'ютерної програми, бази даних), привласнення авторства на такий об'єкт або інше умисне порушення прав на нього тягне за собою накладення штрафу.</p></div>
+            </div>
+
+            <div class="law-section">
+                <h3>Глава 7. Охорона природи (Ст. 52–70)</h3>
+                <div class="law-item"><strong>Стаття 52. Псування сільськогосподарських земель</strong><p>Псування земель, забруднення їх хімічними і радіоактивними речовинами тягнуть за собою накладення штрафу.</p></div>
+                <div class="law-item"><strong>Стаття 53. Порушення правил використання земель</strong><p>Використання земель не за цільовим призначенням, невиконання природоохоронного режиму тягне за собою накладення штрафу.</p></div>
+                <div class="law-item"><strong>Стаття 53-1. Самовільне зайняття земельної ділянки</strong><p>Самовільне зайняття земельної ділянки тягне за собою накладення штрафу на громадян та посадових осіб.</p></div>
+                <div class="law-item"><strong>Стаття 53-2. Спотворення даних земельного кадастру</strong><p>Внесення неправдивих даних до земельного кадастру, перекручення або приховування даних.</p></div>
+                <div class="law-item"><strong>Стаття 53-3. Зняття ґрунтового покриву</strong><p>Зняття та перенесення ґрунтового покриву земельних ділянок без спеціального дозволу.</p></div>
+                <div class="law-item"><strong>Стаття 54. Порушення строків повернення земель</strong><p>Порушення строків повернення тимчасово зайнятих земель або невиконання обов'язків щодо приведення їх у стан, придатний для використання.</p></div>
+                <div class="law-item"><strong>Стаття 55. Порушення землеустрою</strong><p>Відхилення від затверджених в установленому порядку проектів землеустрою.</p></div>
+                <div class="law-item"><strong>Стаття 56. Знищення межових знаків</strong><p>Знищення або пошкодження межових знаків меж землекористувань.</p></div>
+                <div class="law-item"><strong>Стаття 57. Порушення вимог щодо охорони надр</strong><p>Самовільна забудова площ залягання корисних копалин, невиконання правил охорони надр.</p></div>
+                <div class="law-item"><strong>Стаття 58. Порушення правил геологічного вивчення надр</strong><p>Порушення правил і вимог проведення робіт по геологічному вивченню надр.</p></div>
+                <div class="law-item"><strong>Стаття 59. Порушення правил охорони водних ресурсів</strong><p>Забруднення і засмічення вод, порушення водоохоронного режиму тягнуть за собою накладення штрафу.</p></div>
+                <div class="law-item"><strong>Стаття 59-1. Порушення вимог щодо охорони вод</strong><p>Порушення вимог щодо охорони територіальних і внутрішніх морських вод від забруднення і засмічення.</p></div>
+                <div class="law-item"><strong>Стаття 60. Порушення правил водокористування</strong><p>Забір води з порушенням планів водокористування, самовільне проведення гідротехнічних робіт тягнуть за собою накладення штрафу.</p></div>
+                <div class="law-item"><strong>Стаття 61. Пошкодження водогосподарських споруд</strong><p>Пошкодження водогосподарських споруд і пристроїв, порушення правил їх експлуатації тягнуть за собою накладення штрафу.</p></div>
+                <div class="law-item"><strong>Стаття 62. Невиконання обов'язків щодо реєстрації суднових документів</strong><p>Невиконання капітаном судна обов'язків, передбачених Кодексом торговельного мореплавства України.</p></div>
+                <div class="law-item"><strong>Стаття 63. Незаконне використання надр</strong><p>Самовільне користування надрами, укладення угод, які порушують право власності на надра, тягнуть за собою накладення штрафу.</p></div>
+                <div class="law-item"><strong>Стаття 64. Порушення встановленого порядку використання лісосічного фонду</strong><p>Порушення встановленого порядку використання лісосічного фонду, заготівлі і вивезення деревини, заготівлі живиці тягне за собою накладення штрафу.</p></div>
+                <div class="law-item"><strong>Стаття 65. Незаконна порубка лісу</strong><p>Незаконна порубка і пошкодження дерев або чагарників; знищення або пошкодження лісових культур, сіянців або саджанців у лісових розсадниках і на плантаціях.</p></div>
+                <div class="law-item"><strong>Стаття 65-1. Знищення полезахисних лісових смуг</strong><p>Знищення або пошкодження полезахисних лісових смуг та захисних лісових насаджень тягнуть за собою накладення штрафу.</p></div>
+                <div class="law-item"><strong>Стаття 66. Знищення підросту</strong><p>Знищення або пошкодження підросту в лісах.</p></div>
+                <div class="law-item"><strong>Стаття 67. Порушення правил відновлення лісів</strong><p>Порушення правил та інструкцій по відновленню, поліпшенню стану і породного складу лісів.</p></div>
+                <div class="law-item"><strong>Стаття 68. Порушення правил охорони атмосферного повітря</strong><p>Викид забруднюючих речовин в атмосферне повітря без дозволу спеціально уповноваженого органу або недодержання вимог, передбачених дозволом, тягне за собою накладення штрафу.</p></div>
+                <div class="law-item"><strong>Стаття 69. Порушення вимог щодо охорони видів Червоної книги</strong><p>Порушення порядку придбання чи збуту об'єктів тваринного або рослинного світу, занесених до Червоної книги України.</p></div>
+                <div class="law-item"><strong>Стаття 70. Самовільне сінокосіння і пасіння худоби</strong><p>Самовільне сінокосіння і пасіння худоби в лісах і на землях державного лісового фонду, самовільне збирання дикорослих плодів, горіхів, грибів, ягід.</p></div>
             </div>
         `,
         'Цивільний кодекс України': `
             <div class="law-section">
-                <h3>Книга 1. Загальні положення</h3>
-                <div class="law-item"><strong>Стаття 1. Відносини, що регулюються цивільним законодавством</strong><p>Цивільним законодавством регулюються особисті немайнові та майнові відносини (цивільні відносини).</p></div>
-                <div class="law-item"><strong>Стаття 3. Загальні засади цивільного законодавства</strong><p>Загальними засадами цивільного законодавства є: неприпустимість свавільного втручання у сферу особистого життя людини; неприпустимість позбавлення права власності, крім випадків, встановлених Конституцією України та законом; свобода договору; свобода підприємницької діяльності.</p></div>
+                <h3>Книга 1. Загальні положення (Ст. 1–70)</h3>
+                <div class="law-item"><strong>Стаття 1. Відносини, що регулюються цивільним законодавством</strong><p>Цивільним законодавством регулюються особисті немайнові та майнові відносини (цивільні відносини), засновані на юридичній рівності, вільному волевиявленні, майновій самостійності їх учасників.</p></div>
+                <div class="law-item"><strong>Стаття 2. Учасники цивільних відносин</strong><p>Учасниками цивільних відносин є фізичні особи та юридичні особи. Учасниками також є держава Україна, Автономна Республіка Крим, територіальні громади, іноземні держави та інші суб'єкти публічного права.</p></div>
+                <div class="law-item"><strong>Стаття 3. Загальні засади цивільного законодавства</strong><p>Загальними засадами є: неприпустимість свавільного втручання у сферу особистого життя; неприпустимість позбавлення права власності; свобода договору; свобода підприємницької діяльності; судовий захист цивільного права та інтересу; справедливість, добросовісність та розумність.</p></div>
+                <div class="law-item"><strong>Стаття 4. Акти цивільного законодавства України</strong><p>Основним актом є Цивільний кодекс України. Актами також є Конституція України, закони України, акти Президента України та Кабінету Міністрів України.</p></div>
+                <div class="law-item"><strong>Стаття 5. Дія актів цивільного законодавства у часі</strong><p>Акти цивільного законодавства регулюють відносини, які виникли з дня набрання ними чинності. Акт не має зворотної дії у часі, крім випадків, коли він пом'якшує або скасовує цивільну відповідальність.</p></div>
+                <div class="law-item"><strong>Стаття 6. Акти цивільного законодавства і договір</strong><p>Сторони мають право укласти договір, який не передбачений актами цивільного законодавства, але відповідає загальним засадам. Сторони в договорі можуть відступити від положень актів цивільного законодавства і врегулювати свої відносини на власний розсуд.</p></div>
+                <div class="law-item"><strong>Стаття 7. Звичай</strong><p>Цивільні відносини можуть регулюватися звичаєм, зокрема звичаєм ділового обороту. Звичай, що суперечить договору або актам цивільного законодавства, не застосовується.</p></div>
+                <div class="law-item"><strong>Стаття 8. Аналогія</strong><p>Якщо відносини не врегульовані актами законодавства або договором, застосовуються правові норми, що регулюють подібні відносини (аналогія закону) або загальні засади (аналогія права).</p></div>
+                <div class="law-item"><strong>Стаття 9. Застосування Цивільного кодексу до інших відносин</strong><p>Положення цього Кодексу застосовуються до врегулювання сімейних, трудових відносин, відносин у сфері використання природних ресурсів, якщо вони не врегульовані іншими актами законодавства.</p></div>
+                <div class="law-item"><strong>Стаття 10. Міжнародні договори</strong><p>Чинний міжнародний договір, згода на обов'язковість якого надана Верховною Радою України, є частиною національного цивільного законодавства України.</p></div>
+                <div class="law-item"><strong>Стаття 11. Підстави виникнення цивільних прав та обов'язків</strong><p>Цивільні права та обов'язки виникають із дій осіб, що передбачені актами цивільного законодавства, а також із дій, що не передбачені ними, але породжують права та обов'язки (договори, створення об'єктів інтелектуальної власності, завдання шкоди тощо).</p></div>
+                <div class="law-item"><strong>Стаття 12. Здійснення цивільних прав</strong><p>Особа здійснює свої цивільні права вільно, на власний розсуд. Нездійснення особою своїх цивільних прав не є підставою для їх припинення, крім випадків, встановлених законом.</p></div>
+                <div class="law-item"><strong>Стаття 13. Межі здійснення цивільних прав</strong><p>Цивільні права особа здійснює у межах, наданих їй договором або актами цивільного законодавства. При здійсненні своїх прав особа зобов'язана утримуватися від дій, які могли б порушити права інших осіб або завдати шкоди довкіллю.</p></div>
+                <div class="law-item"><strong>Стаття 14. Виконання цивільних обов'язків</strong><p>Цивільні обов'язки виконуються у межах, встановлених договором або актом цивільного законодавства. Особа не може бути примушена до дій, вчинення яких не є обов'язковим для неї.</p></div>
+                <div class="law-item"><strong>Стаття 15. Право на захист цивільних прав та інтересів</strong><p>Кожна особа має право на захист свого цивільного права у разі його порушення, невизнання або оспорювання. Кожна особа має право на захист свого інтересу, який не суперечить загальним засадам цивільного законодавства.</p></div>
+                <div class="law-item"><strong>Стаття 16. Захист цивільних прав та інтересів судом</strong><p>Кожна особа має право звернутися до суду за захистом свого особистого немайнового або майнового права та інтересу. Способами захисту є: визнання права, визнання правочину недійсним, припинення дії, відновлення становища, відшкодування шкоди тощо.</p></div>
+                <div class="law-item"><strong>Стаття 17. Захист цивільних прав Президентом України та іншими органами</strong><p>Президент України, органи державної влади, органи влади Автономної Республіки Крим або органи місцевого самоврядування здійснюють захист цивільних прав та інтересів у межах, встановлених Конституцією та законом.</p></div>
+                <div class="law-item"><strong>Стаття 18. Захист цивільних прав нотаріусом</strong><p>Нотаріус здійснює захист цивільних прав шляхом вчинення виконавчого напису на борговому документі у випадках і в порядку, встановлених законом.</p></div>
+                <div class="law-item"><strong>Стаття 19. Самозахист цивільних прав</strong><p>Особа має право на самозахист — застосування засобів протидії, які не заборонені законом та не суперечать моральним засадам суспільства. Способи самозахисту мають відповідати змісту права, що порушене.</p></div>
+                <div class="law-item"><strong>Стаття 20. Здійснення права на захист</strong><p>Особа здійснює право на захист на власний розсуд. Нездійснення цього права не є підставою для припинення цивільного права, що порушене, крім випадків, встановлених законом.</p></div>
+                <div class="law-item"><strong>Стаття 21. Визнання незаконним правового акта органу державної влади</strong><p>Суд визнає незаконним та скасовує правовий акт індивідуальної дії, виданий органом державної влади або місцевого самоврядування, якщо він суперечить актам цивільного законодавства і порушує цивільні права або інтереси.</p></div>
+                <div class="law-item"><strong>Стаття 22. Відшкодування збитків</strong><p>Особа, якій завдано збитків у результаті порушення її цивільного права, має право на їх відшкодування. Збитками є втрати, яких особа зазнала у зв'язку зі знищенням або пошкодженням речі, а також витрати, які вона зробила або мусить зробити для відновлення свого права (реальні збитки), та доходи, які вона могла б реально одержати (упущена вигода).</p></div>
+                <div class="law-item"><strong>Стаття 23. Відшкодування моральної шкоди</strong><p>Особа має право на відшкодування моральної шкоди, завданої внаслідок порушення її прав. Моральна шкода полягає у фізичному болю та стражданнях, душевних стражданнях, приниженні честі та гідності.</p></div>
+                <div class="law-item"><strong>Стаття 24. Поняття фізичної особи</strong><p>Людина як учасник цивільних відносин вважається фізичною особою.</p></div>
+                <div class="law-item"><strong>Стаття 25. Цивільна правоздатність фізичної особи</strong><p>Здатність мати цивільні права та обов'язки (цивільну правоздатність) мають усі фізичні особи. Вона виникає у момент народження і припиняється у момент смерті.</p></div>
+                <div class="law-item"><strong>Стаття 26. Обсяг цивільної правоздатності фізичної особи</strong><p>Усі фізичні особи є рівними у здатності мати цивільні права та обов'язки. Фізична особа може мати усі майнові права, право власності, право на підприємницьку діяльність тощо.</p></div>
+                <div class="law-item"><strong>Стаття 27. Запобігання обмеженню можливості мати цивільні права та обов'язки</strong><p>Правочин, що обмежує можливість фізичної особи мати не заборонені законом цивільні права та обов'язки, є нікчемним.</p></div>
+                <div class="law-item"><strong>Стаття 28. Ім'я фізичної особи</strong><p>Фізична особа набуває прав та обов'язків і здійснює їх під своїм ім'ям. Ім'я складається з прізвища, власного імені та по батькові.</p></div>
+                <div class="law-item"><strong>Стаття 29. Місце проживання фізичної особи</strong><p>Місцем проживання фізичної особи є житло, в якому вона проживає постійно або тимчасово. Фізична особа, яка досягла 14 років, вільно обирає собі місце проживання.</p></div>
+                <div class="law-item"><strong>Стаття 30. Цивільна дієздатність фізичної особи, яка не досягла 14 років</strong><p>Фізична особа, яка не досягла 14 років (малолітня особа), має право вчиняти дрібні побутові правочини. Вона не несе відповідальності за завдану нею шкоду.</p></div>
+                <div class="law-item"><strong>Стаття 31. Часткова цивільна дієздатність фізичної особи, яка не досягла 14 років</strong><p>Фізична особа, яка не досягла 14 років, має часткову цивільну дієздатність. Вона може вчиняти дрібні побутові правочини та здійснювати особисті немайнові права на результати інтелектуальної діяльності.</p></div>
+                <div class="law-item"><strong>Стаття 32. Неповна цивільна дієздатність фізичної особи у віці від 14 до 18 років</strong><p>Фізична особа у віці від 14 до 18 років має неповну цивільну дієздатність. Вона може самостійно розпоряджатися своїм заробітком, стипендією, бути учасником юридичних осіб, вчиняти дрібні побутові правочини. Інші правочини вчиняє за згодою батьків.</p></div>
+                <div class="law-item"><strong>Стаття 33. Цивільна відповідальність неповнолітньої особи</strong><p>Неповнолітня особа (14–18 років) несе відповідальність за шкоду, завдану нею іншій особі, та за порушення договору на загальних підставах. Якщо у неї немає майна, шкоду відшкодовують батьки.</p></div>
+                <div class="law-item"><strong>Стаття 34. Повна цивільна дієздатність</strong><p>Повну цивільну дієздатність має фізична особа, яка досягла 18 років (повноліття). У разі реєстрації шлюбу до 18 років особа набуває повної дієздатності з моменту реєстрації шлюбу.</p></div>
+                <div class="law-item"><strong>Стаття 35. Надання повної цивільної дієздатності</strong><p>Повна цивільна дієздатність може бути надана фізичній особі, яка досягла 16 років і працює за трудовим договором, або записана матір'ю чи батьком дитини, або бажає займатися підприємницькою діяльністю (за згодою батьків).</p></div>
+                <div class="law-item"><strong>Стаття 36. Обмеження цивільної дієздатності фізичної особи</strong><p>Суд може обмежити цивільну дієздатність фізичної особи, якщо вона страждає на психічний розлад, який істотно впливає на її здатність усвідомлювати значення своїх дій, або зловживає спиртними напоями, наркотичними засобами, азартними іграми.</p></div>
+                <div class="law-item"><strong>Стаття 37. Визнання фізичної особи недієздатною</strong><p>Фізична особа може бути визнана судом недієздатною, якщо вона внаслідок хронічного, стійкого психічного розладу не здатна усвідомлювати значення своїх дій та (або) керувати ними. Над нею встановлюється опіка.</p></div>
+                <div class="law-item"><strong>Стаття 38. Поновлення цивільної дієздатності фізичної особи</strong><p>У разі видужання фізичної особи або поліпшення її психічного стану суд поновлює її цивільну дієздатність.</p></div>
+                <div class="law-item"><strong>Стаття 39. Визнання фізичної особи безвісно відсутньою</strong><p>Фізична особа може бути визнана судом безвісно відсутньою, якщо протягом одного року в місці її постійного проживання немає відомостей про місце її перебування.</p></div>
+                <div class="law-item"><strong>Стаття 40. Опіка над майном фізичної особи, яка визнана безвісно відсутньою</strong><p>Над майном особи, визнаної безвісно відсутньою, встановлюється опіка. Опікун приймає виконання цивільних обов'язків на користь цієї особи, погашає борги за рахунок її майна.</p></div>
+                <div class="law-item"><strong>Стаття 41. Правові наслідки визнання фізичної особи безвісно відсутньою</strong><p>Чоловік або дружина безвісно відсутньої особи набувають право на розірвання шлюбу. Припиняються зобов'язання, пов'язані з особою.</p></div>
+                <div class="law-item"><strong>Стаття 42. Скасування рішення суду про визнання фізичної особи безвісно відсутньою</strong><p>У разі появи фізичної особи, яка була визнана безвісно відсутньою, суд скасовує своє рішення. Це є підставою для скасування опіки над майном.</p></div>
+                <div class="law-item"><strong>Стаття 43. Оголошення фізичної особи померлою</strong><p>Фізична особа може бути оголошена судом померлою, якщо у місці її постійного проживання немає відомостей про місце її перебування протягом трьох років (або шести місяців за особливих обставин).</p></div>
+                <div class="law-item"><strong>Стаття 44. Правові наслідки оголошення фізичної особи померлою</strong><p>Оголошення фізичної особи померлою тягне за собою ті самі правові наслідки, що і смерть фізичної особи (відкриття спадщини, припинення шлюбу).</p></div>
+                <div class="law-item"><strong>Стаття 45. Правові наслідки появи фізичної особи, яка була оголошена померлою</strong><p>Якщо особа з'явилася, рішення суду скасовується. Вона має право вимагати повернення збереженого майна, яке безоплатно перейшло до інших осіб після оголошення її померлою.</p></div>
+                <div class="law-item"><strong>Стаття 46. Державна реєстрація актів цивільного стану</strong><p>Державній реєстрації підлягають народження фізичної особи та її походження, громадянство, шлюб, розірвання шлюбу, зміна імені, смерть.</p></div>
+                <div class="law-item"><strong>Стаття 47. Органи, що здійснюють державну реєстрацію актів цивільного стану</strong><p>Державна реєстрація актів цивільного стану провадиться органами державної реєстрації актів цивільного стану (РАЦС), а також виконавчими комітетами сільських, селищних, міських рад.</p></div>
+                <div class="law-item"><strong>Стаття 48. Оскарження дій щодо державної реєстрації актів цивільного стану</strong><p>Дії або бездіяльність працівника органу державної реєстрації актів цивільного стану можуть бути оскаржені до відповідного органу вищого рівня або до суду.</p></div>
+                <div class="law-item"><strong>Стаття 49. Акти цивільного стану</strong><p>Актами цивільного стану є події та дії, які нерозривно пов'язані з фізичною особою і започатковують, змінюють, доповнюють або припиняють її можливість бути суб'єктом цивільних прав та обов'язків.</p></div>
+                <div class="law-item"><strong>Стаття 50. Право фізичної особи на здійснення підприємницької діяльності</strong><p>Право на здійснення підприємницької діяльності, яка не заборонена законом, має фізична особа з повною цивільною дієздатністю. Фізична особа здійснює своє право на підприємницьку діяльність за умови її державної реєстрації.</p></div>
+                <div class="law-item"><strong>Стаття 51. Застосування до підприємницької діяльності фізичних осіб нормативно-правових актів</strong><p>До підприємницької діяльності фізичних осіб застосовуються нормативно-правові акти, що регулюють підприємницьку діяльність юридичних осіб, якщо інше не встановлено законом або не випливає із суті відносин.</p></div>
+                <div class="law-item"><strong>Стаття 52. Цивільно-правова відповідальність фізичної особи - підприємця</strong><p>Фізична особа - підприємець відповідає за зобов'язаннями, пов'язаними з підприємницькою діяльністю, усім своїм майном, крім майна, на яке згідно із законом не може бути звернено стягнення.</p></div>
+                <div class="law-item"><strong>Стаття 53. Банкрутство фізичної особи - підприємця</strong><p>Фізична особа, яка неспроможна задовольнити вимоги кредиторів, пов'язані із здійсненням нею підприємницької діяльності, може бути визнана банкрутом у порядку, встановленому законом.</p></div>
+                <div class="law-item"><strong>Стаття 54. Опіка та піклування</strong><p>Опіка та піклування встановлюються з метою забезпечення особистих немайнових і майнових прав та інтересів малолітніх, неповнолітніх осіб, а також повнолітніх осіб, які за станом здоров'я не можуть самостійно здійснювати свої права і виконувати обов'язки.</p></div>
+                <div class="law-item"><strong>Стаття 55. Мета опіки та піклування</strong><p>Опіка та піклування встановлюються для виховання малолітніх та неповнолітніх дітей, захисту їхніх прав, а також для захисту прав повнолітніх осіб, які потребують допомоги.</p></div>
+                <div class="law-item"><strong>Стаття 56. Орган опіки та піклування</strong><p>Органами опіки та піклування є районні, районні в містах Києві та Севастополі державні адміністрації, виконавчі органи міських, районних у містах, сільських, селищних рад.</p></div>
+                <div class="law-item"><strong>Стаття 57. Обов'язок повідомляти про фізичних осіб, які потребують опіки або піклування</strong><p>Особа, якій стало відомо про фізичну особу, яка потребує опіки або піклування, зобов'язана негайно повідомити про це орган опіки та піклування.</p></div>
+                <div class="law-item"><strong>Стаття 58. Фізичні особи, над якими встановлюється опіка</strong><p>Опіка встановлюється над малолітніми особами, які є сиротами або позбавлені батьківського піклування, та фізичними особами, які визнані недієздатними.</p></div>
+                <div class="law-item"><strong>Стаття 59. Фізичні особи, над якими встановлюється піклування</strong><p>Піклування встановлюється над неповнолітніми особами, які є сиротами або позбавлені батьківського піклування, та фізичними особами, цивільна дієздатність яких обмежена.</p></div>
+                <div class="law-item"><strong>Стаття 60. Встановлення опіки та піклування судом</strong><p>Суд встановлює опіку над фізичною особою у разі визнання її недієздатною і призначає опікуна. Суд встановлює піклування над фізичною особою у разі обмеження її цивільної дієздатності і призначає піклувальника.</p></div>
+                <div class="law-item"><strong>Стаття 61. Встановлення опіки та піклування органом опіки та піклування</strong><p>Орган опіки та піклування встановлює опіку над малолітньою особою та піклування над неповнолітньою особою, крім випадків, встановлених законом.</p></div>
+                <div class="law-item"><strong>Стаття 62. Місце встановлення опіки або піклування</strong><p>Опіка або піклування встановлюються за місцем проживання фізичної особи, яка потребує опіки чи піклування, або за місцем проживання опікуна чи піклувальника.</p></div>
+                <div class="law-item"><strong>Стаття 63. Призначення опікуна або піклувальника</strong><p>Опікуном або піклувальником може бути лише фізична особа з повною цивільною дієздатністю. Призначення здійснюється переважно з осіб, які перебувають у сімейних, родинних відносинах з підопічним.</p></div>
+                <div class="law-item"><strong>Стаття 64. Фізична особа, яка не може бути опікуном або піклувальником</strong><p>Не може бути опікуном або піклувальником особа, яка позбавлена батьківських прав, поведінка якої суперечить інтересам підопічного, або яка перебуває на обліку у наркологічному або психоневрологічному закладі.</p></div>
+                <div class="law-item"><strong>Стаття 65. Опіка над майном</strong><p>До встановлення опіки або піклування і призначення опікуна чи піклувальника опіку над майном фізичної особи здійснює орган опіки та піклування.</p></div>
+                <div class="law-item"><strong>Стаття 66. Права опікуна та піклувальника</strong><p>Опікун та піклувальник мають право вимагати повернення підопічного від осіб, які тримають його без законної підстави.</p></div>
+                <div class="law-item"><strong>Стаття 67. Права та обов'язки опікуна</strong><p>Опікун зобов'язаний дбати про підопічного, про створення йому необхідних побутових умов, забезпечувати його доглядом та лікуванням. Опікун вчиняє правочини від імені та в інтересах підопічного.</p></div>
+                <div class="law-item"><strong>Стаття 68. Права та обов'язки піклувальника</strong><p>Піклувальник зобов'язаний дбати про створення необхідних побутових умов, навчання та розвиток підопічного. Піклувальник дає згоду на вчинення підопічним правочинів.</p></div>
+                <div class="law-item"><strong>Стаття 69. Право опікуна та піклувальника на управління майном</strong><p>Опікун самостійно здійснює витрати, необхідні для задоволення потреб підопічного, за рахунок пенсії, аліментів, доходів від майна підопічного.</p></div>
+                <div class="law-item"><strong>Стаття 70. Правочини, які не може вчиняти опікун</strong><p>Опікун не має права без дозволу органу опіки та піклування вчиняти правочини щодо відмови від майнових прав підопічного, видавати письмові зобов'язання від його імені, укладати договори, що підлягають нотаріальному посвідченню.</p></div>
             </div>
             <div class="law-section">
                 <h3>Книга 3. Право власності та інші речові права</h3>
@@ -1340,13 +1711,76 @@
         `,
         'Що дозволено поліції?': `
             <div class="law-section">
-                <h3>СУВОРИЙ РЕГЛАМЕНТ ДІЙ ПОЛІЦІЇ</h3>
-                <div class="law-item"><strong>1. ПОЧАТОК СПІЛКУВАННЯ (Базовий алгоритм)</strong><p>Будь-який контакт поліцейського з громадянином повинен починатися за єдиним сценарієм (ст. 18 ЗУ «Про Нацполіцію»):<br><strong>Крок 1.</strong> Поліцейський зобов'язаний привітатися та ПЕРШИМ назвати своє прізвище, посаду і спеціальне звання.<br><strong>Крок 2.</strong> На вимогу громадянина поліцейський зобов'язаний пред'явити своє службове посвідчення. Він не випускає його з рук, але зобов'язаний дати достатньо часу, щоб ви могли прочитати дані, переписати їх або зафіксувати на камеру.<br><strong>Крок 3.</strong> Після цього поліцейський зобов'язаний чітко повідомити причину та мету свого звернення, посилаючись на конкретну норму закону.</p></div>
-                <div class="law-item"><strong>2. ПЕРЕВІРКА ДОКУМЕНТІВ НА ВУЛИЦІ</strong><p>Поліцейський не має права підійти і вимагати документи «для встановлення особи» чи «для профілактики».<br><strong>Алгоритм дій:</strong> Поліцейський повинен підійти, представитися і назвати ОДНУ з чітких підстав для перевірки (ст. 32 ЗУ «Про Нацполіцію»). Наприклад: ви схожі на особу в розшуку, ви перебуваєте на закритій території або є підстави вважати, що ви вчинили правопорушення.<br><strong>Обмеження:</strong> Поліцейський має право лише ознайомитися з документом (навіть з ваших рук). Вилучати паспорт або брати його в заставу категорично заборонено.</p></div>
-                <div class="law-item"><strong>3. ЗУПИНКА АВТОМОБІЛЯ</strong><p>Зупинка транспортного засобу — це не лотерея. Поліцейський діє за чітким протоколом (ст. 35 ЗУ «Про Нацполіцію»).<br><strong>Крок 1.</strong> Зупинити авто, маючи на це вичерпну законну підставу (наприклад: порушення ПДР, очевидна технічна несправність, авто в орієнтуванні).<br><strong>Крок 2.</strong> Підійти до водія, представитися та ОДРАЗУ назвати причину зупинки.<br><strong>Крок 3.</strong> Якщо водій порушив ПДР, поліцейський зобов'язаний спочатку детально пояснити суть правопорушення і надати докази (відео з камери чи радара), і лише після цього вимагати водійське посвідчення.</p></div>
-                <div class="law-item"><strong>4. ПОВЕРХНЕВА ПЕРЕВІРКА (Огляд особи та речей)</strong><p>Поверхнева перевірка — це превентивний захід, а не обшук. Мета — переконатися, що у людини немає зброї чи заборонених речей.<br><strong>Перевірка по тілу:</strong> Поліцейський має право здійснювати перевірку лише щодо особи ТІЄЇ Ж СТАТІ. Він може проводити металошукачем або руками ЛИШЕ по поверхні одягу. Засовувати свої руки у ваші кишені чи під одяг поліцейському заборонено.<br><strong>Перевірка речей (сумки, багажника):</strong> Поліцейський зобов'язаний попросити вас самостійно відкрити рюкзак, бардачок чи багажник. Він має право здійснювати лише ВІЗУАЛЬНИЙ огляд. Торкатися ваших речей всередині сумки або самостійно їх перекладати поліцейському категорично заборонено.</p></div>
-                <div class="law-item"><strong>5. ЗАСТОСУВАННЯ СИЛИ АБО КАЙДАНКІВ</strong><p><strong>Алгоритм:</strong> Поліцейський зобов'язаний заздалегідь попередити людину про намір застосувати фізичну силу чи спецзасоби (кайданки, газ). Він повинен дати людині достатньо часу, щоб вона добровільно виконала законну вимогу.<br><strong>Виняток:</strong> Застосовувати силу без попередження поліцейський має право лише у разі раптового фізичного нападу на нього чи інших людей.</p></div>
-                <div class="law-item"><strong>6. ПРОЦЕДУРА ЗАТРИМАННЯ (Найсуворіший регламент)</strong><p>Затримання — це тимчасове позбавлення волі. Поліцейський не може просто сказати «сідай у машину, поїхали розбиратися». Він зобов'язаний діяти за суворим алгоритмом (ст. 261 КУпАП, ст. 208 КПК України). Якщо хоч один крок пропущено — дії поліцейського незаконні.<br><strong>Крок 1. Фіксація статусу та часу.</strong> Поліцейський зобов'язаний чітко сказати фразу: «Ви затримані» і назвати конкретну підставу (статтю). Час затримання починає рахуватися рівно з тієї секунди, коли вам фізично заборонили вільно пересуватися.<br><strong>Крок 2. Негайне зачитування прав.</strong> Одразу на місці (до того, як посадити в авто) поліцейський зобов'язаний зрозумілою мовою зачитати ваші права: право на адвоката, право не давати жодних свідчень (ст. 63 Конституції) та право на медичну допомогу.<br><strong>Крок 3. Особистий обшук (при затриманні).</strong> Якщо вас офіційно затримують, поліцейський вже має право провести повний обшук ваших кишень та вилучити речі. АЛЕ він зобов'язаний дотримуватися правила: обшук проводить виключно особа тієї ж статі і обов'язково в присутності двох незалежних понятих тієї ж статі.<br><strong>Крок 4. Складання протоколу.</strong> Одразу по прибуттю до відділку поліцейський (або черговий) зобов'язаний скласти «Протокол про затримання». У ньому має бути вказано точний час зупинки на вулиці, підстави затримання та повний перелік вилучених речей. Вимагайте копію протоколу.<br><strong>Крок 5. Виклик адвоката та дзвінок родичам.</strong> Поліцейський зобов'язаний негайно повідомити Центр безоплатної правової допомоги (БПД) та ваших родичів.<br><strong>Крок 6. Жорсткі ліміти часу.</strong> За адміністративне правопорушення вас можуть затримати максимум на 3 години. Якщо три години минуло — вас зобов'язані негайно відпустити.</p></div>
+                <h3>ВІДЕОФІКСАЦІЯ (СТ. 34 КОНСТИТУЦІЇ ТА СТ. 9 ЗУ «ПРО НАЦПОЛІЦІЮ»)</h3>
+                <div class="law-item"><p>Поліцейський є службовою особою, яка виконує свої обов'язки відкрито і публічно (ст. 9 ЗУ «Про Національну поліцію»). Поліцейському категорично заборонено перешкоджати громадянам здійснювати відеофіксацію його дій. Вимагати припинити зйомку, виривати телефон з рук або примушувати видалити відеозапис є перевищенням службових повноважень. Єдиний виняток — фіксація військових об'єктів в умовах воєнного стану.</p></div>
+            </div>
+            <div class="law-section">
+                <h3>1. ПОЧАТОК СПІЛКУВАННЯ (Базовий алгоритм)</h3>
+                <div class="law-item"><strong>Крок 1.</strong><p>Поліцейський зобов'язаний привітатися та ПЕРШИМ назвати своє прізвище, посаду і спеціальне звання (ч. 3 ст. 18 ЗУ «Про Нацполіцію»).</p></div>
+                <div class="law-item"><strong>Крок 2.</strong><p>На вимогу громадянина поліцейський зобов'язаний пред'явити своє службове посвідчення. Він не випускає його з рук, але зобов'язаний дати достатньо часу, щоб особа могла ознайомитися з даними (ч. 3 ст. 18 ЗУ «Про Нацполіцію»).</p></div>
+                <div class="law-item"><strong>Крок 3.</strong><p>Після цього поліцейський зобов'язаний чітко повідомити причину та мету свого звернення, посилаючись на нормативно-правові акти (ч. 1 ст. 18 ЗУ «Про Нацполіцію»).</p></div>
+            </div>
+            <div class="law-section">
+                <h3>2. ПЕРЕВІРКА ДОКУМЕНТІВ НА ВУЛИЦІ</h3>
+                <div class="law-item"><p>Поліцейський не має права вимагати документи «для профілактики».</p></div>
+                <div class="law-item"><strong>Алгоритм дій:</strong><p>Поліцейський повинен підійти, представитися і назвати ОДНУ з шести вичерпних підстав для перевірки (ч. 1 ст. 32 ЗУ «Про Нацполіцію»). Наприклад: особа схожа на ту, що перебуває в розшуку, або є підстави вважати, що вона вчинила правопорушення.</p></div>
+                <div class="law-item"><strong>Обмеження:</strong><p>Поліцейський має право лише візуально ознайомитися з документом (ч. 2 ст. 32 ЗУ «Про Нацполіцію»). Вилучати паспорт або приймати його в заставу категорично заборонено (ст. 201 КУпАП).</p></div>
+            </div>
+            <div class="law-section">
+                <h3>3. ЗУПИНКА АВТОМОБІЛЯ</h3>
+                <div class="law-item"><p>Поліцейський діє за чітким протоколом (ст. 35 ЗУ «Про Нацполіцію»).</p></div>
+                <div class="law-item"><strong>Крок 1.</strong><p>Зупинити авто, маючи на це вичерпну законну підставу з переліку (ч. 1 ст. 35 ЗУ «Про Нацполіцію»).</p></div>
+                <div class="law-item"><strong>Крок 2.</strong><p>Підійти до водія, представитися та ОДРАЗУ поінформувати про конкретну причину зупинки (ч. 2 ст. 35 ЗУ «Про Нацполіцію»).</p></div>
+                <div class="law-item"><strong>Крок 3.</strong><p>Якщо водію інкримінують порушення ПДР, поліцейський зобов'язаний надати можливість ознайомитися з доказами (відео з камери чи радара) до моменту винесення постанови (ст. 268 КУпАП та ст. 251 КУпАП).</p></div>
+            </div>
+            <div class="law-section">
+                <h3>4. ПОВЕРХНЕВА ПЕРЕВІРКА (Огляд особи та речей)</h3>
+                <div class="law-item"><p>Це превентивний захід, а не обшук. Мета — переконатися, що в особи немає зброї.</p></div>
+                <div class="law-item"><strong>Перевірка по тілу:</strong><p>Поліцейський має право здійснювати перевірку лише щодо особи ТІЄЇ Ж СТАТІ. Він може проводити металошукачем або руками ЛИШЕ по поверхні одягу (ч. 3 ст. 34 ЗУ «Про Нацполіцію»).</p></div>
+                <div class="law-item"><strong>Перевірка речей (сумки, багажника):</strong><p>Поліцейський зобов'язаний вимагати від особи самостійно показати вміст особистих речей чи транспортного засобу. Поліцейський здійснює лише візуальний огляд. Самостійно торкатися речей поліцейському заборонено (ч. 4 ст. 34 ЗУ «Про Нацполіцію»).</p></div>
+            </div>
+            <div class="law-section">
+                <h3>5. ПЕРЕВІРКА СМАРТФОНА ТА ОСОБИСТИХ ЛИСТУВАНЬ</h3>
+                <div class="law-item"><p>Телефон є приватною власністю. Поліцейському категорично заборонено самовільно перевіряти його вміст або вимагати розблокувати пристрій на вулиці (ст. 31 Конституції України).</p></div>
+                <div class="law-item"><strong>Крок 1.</strong><p>За наявності обґрунтованої підозри поліцейський має право лише тимчасово вилучити заблокований телефон як речовий доказ (ст. 265 КУпАП).</p></div>
+                <div class="law-item"><strong>Крок 2.</strong><p>Вилучення телефону проводиться виключно із залученням двох незалежних понятих та складанням детального протоколу вилучення (ч. 5 ст. 264 КУпАП).</p></div>
+                <div class="law-item"><strong>Крок 3.</strong><p>Доступ до особистого листування, галереї чи контактів поліцейський може отримати виключно після відповідної ухвали слідчого судді (ч. 2 ст. 114 КПК України).</p></div>
+            </div>
+            <div class="law-section">
+                <h3>6. РЕАКЦІЯ НА ОБРАЗУ ТА НЕЦЕНЗУРНУ ЛАЙКУ</h3>
+                <div class="law-item"><p>Образа поліцейського при виконанні службових обов'язків у громадському місці кваліфікується як дрібне хуліганство або злісна непокора (ст. 173, ст. 185 КУпАП). Поліцейський не має права піддаватися емоціям і зобов'язаний діяти за протоколом:</p></div>
+                <div class="law-item"><strong>Крок 1.</strong><p>Поліцейський зобов'язаний зробити чітке усне зауваження, вимагати припинити протиправні дії (нецензурну лайку) та попередити особу про адміністративну відповідальність.</p></div>
+                <div class="law-item"><strong>Крок 2.</strong><p>Якщо особа не реагує на зауваження, поліцейський має право вимагати документи для встановлення особи та складання адміністративного протоколу на місці.</p></div>
+                <div class="law-item"><strong>Крок 3.</strong><p>У разі продовження агресивних дій або відмови надати документи для складання протоколу, поліцейський має право застосувати кайданки та здійснити адміністративне затримання (до 3 годин) для доставлення у відділок.</p></div>
+            </div>
+            <div class="law-section">
+                <h3>7. ВІДМОВА ВИКОНАТИ ЗАКОННУ ВИМОГУ (Непокора)</h3>
+                <div class="law-item"><p>Громадянин несе відповідальність за відмову виконувати лише ЗАКОННІ вимоги поліції. Дії поліцейського у разі відмови (наприклад, ненадання документів) жорстко регламентовані (ст. 185 КУпАП):</p></div>
+                <div class="law-item"><strong>Крок 1.</strong><p>Поліцейський зобов'язаний переконатися, що його вимога є правомірною — тобто він представився, назвав законну підставу (наприклад, одну з 6 причин для перевірки документів) і пред'явив своє посвідчення на вимогу.</p></div>
+                <div class="law-item"><strong>Крок 2.</strong><p>Поліцейський повинен повторно, чітко і зрозуміло озвучити свою вимогу та попередити особу, що подальша безпідставна відмова буде кваліфікована як злісна непокора законному розпорядженню.</p></div>
+                <div class="law-item"><strong>Крок 3.</strong><p>Якщо особа продовжує ігнорувати або безпідставно відмовлятися виконувати вимогу, поліцейський має право залучити свідків, застосувати заходи фізичного впливу та затримати особу для складання протоколу у відділку поліції.</p></div>
+            </div>
+            <div class="law-section">
+                <h3>8. РЕАГУВАННЯ НА ШАХРАЙСТВО (Кримінальне правопорушення)</h3>
+                <div class="law-item"><p>Шахрайство є кримінальним злочином (ст. 190 КК України). Патрульний поліцейський не проводить досудового розслідування, але зобов'язаний діяти за алгоритмом першочергового реагування:</p></div>
+                <div class="law-item"><strong>Крок 1.</strong><p>Отримавши заяву від потерпілого прямо на вулиці, поліцейський зобов'язаний прийняти усне або письмове звернення, опитати заявника, встановити прикмети ймовірного правопорушника та обставини події.</p></div>
+                <div class="law-item"><strong>Крок 2.</strong><p>Якщо підозрюваного виявлено на місці, поліцейський має право здійснити поверхневу перевірку (ст. 34 ЗУ «Про Нацполіцію») та затримати особу (ст. 208 КПК України) виключно у випадку, якщо її застали безпосередньо під час вчинення злочину або одразу після нього (якщо на неї вказав потерпілий).</p></div>
+                <div class="law-item"><strong>Крок 3.</strong><p>Патрульному поліцейському заборонено самостійно проводити повноцінний обшук автомобіля чи приміщення підозрюваного, а також самовільно вилучати речові докази (наприклад, мічені купюри чи підроблені документи). Поліцейський зобов'язаний заблокувати місце події та негайно викликати слідчо-оперативну групу (СОГ) для офіційного документування.</p></div>
+            </div>
+            <div class="law-section">
+                <h3>9. ЗАСТОСУВАННЯ СИЛИ АБО КАЙДАНКІВ</h3>
+                <div class="law-item"><strong>Алгоритм:</strong><p>Поліцейський зобов'язаний заздалегідь попередити особу про намір застосувати фізичну силу чи спецзасоби і надати час для виконання законної вимоги (ч. 1 ст. 43 ЗУ «Про Нацполіцію»).</p></div>
+                <div class="law-item"><strong>Виняток:</strong><p>Застосовувати силу без попередження поліцейський має право лише у разі раптового фізичного нападу на нього чи інших людей, або збройного опору (ч. 2 ст. 43 ЗУ «Про Нацполіцію»).</p></div>
+            </div>
+            <div class="law-section">
+                <h3>10. ПРОЦЕДУРА ЗАТРИМАННЯ (Найсуворіший регламент)</h3>
+                <div class="law-item"><p>Тимчасове позбавлення волі. Якщо хоч один крок пропущено — дії поліцейського кваліфікуються як незаконні.</p></div>
+                <div class="law-item"><strong>Крок 1. Фіксація статусу та часу.</strong><p>Поліцейський зобов'язаний чітко назвати підставу затримання. Час рахується з моменту, коли особі фізично заборонили вільно пересуватися (ст. 261 КУпАП).</p></div>
+                <div class="law-item"><strong>Крок 2. Негайне зачитування прав.</strong><p>Одразу на місці поліцейський зобов'язаний зачитати права затриманого: право на захисника та право не давати свідчень щодо себе (ст. 29 та ст. 63 Конституції України).</p></div>
+                <div class="law-item"><strong>Крок 3. Особистий обшук (при затриманні).</strong><p>Обшук і вилучення речей проводиться виключно особою тієї ж статі і обов'язково в присутності двох незалежних понятих тієї ж статі (ст. 264 КУпАП).</p></div>
+                <div class="law-item"><strong>Крок 4. Складання протоколу.</strong><p>Одразу по прибуттю до відділку складається протокол про затримання з точним часом зупинки на вулиці (ст. 261 КУпАП).</p></div>
+                <div class="law-item"><strong>Крок 5. Виклик адвоката.</strong><p>Поліцейський зобов'язаний негайно повідомити Центр безоплатної правової допомоги (БПД) та родичів затриманого (Постанова КМУ №1363).</p></div>
+                <div class="law-item"><strong>Крок 6. Жорсткі ліміти часу.</strong><p>Адміністративне затримання може тривати не більш як 3 години (ст. 262 КУпАП).</p></div>
             </div>
         `,
         'Що дозволено тобі?': `
@@ -1424,7 +1858,28 @@
         const contentDiv = document.querySelector('.doc-content');
         contentDiv.classList.remove('show-diff');
         if (lawsData[docName]) {
-            contentDiv.innerHTML = lawsData[docName];
+            const originalHTML = lawsData[docName];
+
+            if (originalHTML) {
+            // --- WATERMARKING LOGIC ---
+            // Create a temporary container to manipulate the DOM without affecting the page
+            const tempContainer = document.createElement('div');
+            tempContainer.innerHTML = originalHTML;
+
+            const lawItems = tempContainer.querySelectorAll('.law-item');
+            // Create a unique watermark. This is a hidden span.
+            const watermarkHTML = `<span class="watermark-z" data-owner="zakon-pro-content"></span>`;
+
+            lawItems.forEach((item, index) => {
+                // Inject the watermark into every 7th card. This makes it less predictable.
+                if ((index + 1) % 7 === 0) {
+                    item.innerHTML += watermarkHTML;
+                }
+            });
+            contentDiv.innerHTML = tempContainer.innerHTML;
+            } else {
+                contentDiv.innerHTML = originalHTML;
+            }
         } else {
             contentDiv.innerHTML = `
                 <div class="doc-placeholder">
@@ -1446,6 +1901,7 @@
         filterContent('');
         // Прокрутка наверх при открытии
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        document.getElementById("myBar").style.width = "0%";
     }
 
     function closeDocument() {
@@ -1513,19 +1969,36 @@
     // === ТАЙМЕР ===
     let timerInterval = null;
     function initApp() {
-        const now = new Date().getTime();
-        let expiryTime = localStorage.getItem('sessionExpiry');
-        
-        // Якщо таймера немає або він вже минув, встановлюємо новий на 30 днів
-        if (!expiryTime || now > parseInt(expiryTime)) {
-            expiryTime = now + (30 * 24 * 60 * 60 * 1000);
-            localStorage.setItem('sessionExpiry', expiryTime);
-        }
+        if (timerInterval) clearInterval(timerInterval);
 
         function updateTimer() {
-            const currentTime = new Date().getTime();
-            const diff = expiryTime - currentTime;
-            if (diff > 0) {
+            const now = new Date().getTime();
+            let expiryTime = localStorage.getItem('sessionExpiry');
+
+            // Якщо таймера немає або він вже минув
+            if (!expiryTime || now > parseInt(expiryTime)) {
+                clearInterval(timerInterval);
+                
+                // Блокуємо сайт
+                localStorage.removeItem('site_unlocked');
+                localStorage.removeItem('sessionExpiry');
+                document.getElementById('site-lock-overlay').style.display = 'flex';
+
+                const wrapper = document.querySelector('.timer-wrapper');
+                if(wrapper) wrapper.style.opacity = '0.3';
+                const msg = document.getElementById('timer-expired');
+                if(msg) msg.style.display = 'block';
+                return;
+            } else {
+                // Скидаємо стилі "минулого" таймера, якщо перезайшли
+                const wrapper = document.querySelector('.timer-wrapper');
+                if(wrapper) wrapper.style.opacity = '1';
+                const msg = document.getElementById('timer-expired');
+                if(msg) msg.style.display = 'none';
+            }
+
+            const diff = parseInt(expiryTime) - now;
+            if (diff >= 0) {
                 const days = Math.floor(diff / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
@@ -1535,13 +2008,6 @@
                 document.getElementById('t-h').innerText = hours < 10 ? '0' + hours : hours;
                 document.getElementById('t-m').innerText = minutes < 10 ? '0' + minutes : minutes;
                 document.getElementById('t-s').innerText = seconds < 10 ? '0' + seconds : seconds;
-            } else {
-                clearInterval(timerInterval);
-                const wrapper = document.querySelector('.timer-wrapper');
-                if(wrapper) wrapper.style.opacity = '0.3';
-                const msg = document.getElementById('timer-expired');
-                if(msg) msg.style.display = 'block';
-                localStorage.removeItem('sessionExpiry'); // Очищаємо прострочену сесію
             }
         }
         updateTimer();
@@ -1551,6 +2017,14 @@
     // --- UI НАСТРОЙКИ ---
     function openSettings() { document.getElementById('settings-modal').style.display = 'flex'; }
     function closeSettings() { document.getElementById('settings-modal').style.display = 'none'; }
+
+    // --- УМОВИ КОРИСТУВАННЯ ---
+    function openTerms() { document.getElementById('terms-modal').style.display = 'flex'; }
+    function closeTerms() { document.getElementById('terms-modal').style.display = 'none'; }
+    
+    document.getElementById('terms-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'terms-modal') closeTerms();
+    });
 
     function setTheme(themeName) {
         document.body.setAttribute('data-theme', themeName);
@@ -1696,6 +2170,10 @@
             const items = document.querySelectorAll('.law-item');
             const terms = lowerQuery.split(/\s+/).filter(t => t.length > 0);
             
+            // Підготовка виправлених термінів
+            const fixedTerms = terms.map(t => fixLayout(t));
+            const useFixed = fixedTerms.join('') !== terms.join('');
+            
             items.forEach(item => {
                 // Зберігаємо оригінальний HTML, якщо ще не зберегли
                 if (!item.dataset.originalHtml) {
@@ -1709,13 +2187,22 @@
                     item.innerHTML = item.dataset.originalHtml;
                 } else {
                     // Перевіряємо наявність усіх слів
-                    const isMatch = terms.every(term => text.includes(term));
+                    let isMatch = terms.every(term => text.includes(term));
+                    let usedTerms = terms;
+
+                    // Якщо не знайдено, спробуємо виправити розкладку
+                    if (!isMatch && useFixed) {
+                        if (fixedTerms.every(term => text.includes(term))) {
+                            isMatch = true;
+                            usedTerms = fixedTerms;
+                        }
+                    }
 
                     if (isMatch) {
                         item.style.display = 'block';
                         // Підсвічування всіх знайдених слів
                         let html = item.dataset.originalHtml;
-                        const safeTerms = terms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\\\$&'));
+                        const safeTerms = usedTerms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\\\$&'));
                         // Регулярний вираз для всіх слів: (слово1|слово2|...)
                         const pattern = '(' + safeTerms.join('|') + ')(?![^<]*>)';
                         const regex = new RegExp(pattern, 'gi');
@@ -1745,13 +2232,29 @@
         document.getElementById('search-suggestions').style.display = 'none';
     };
 
-    // Використовуємо debounce для події input, щоб не перевантажувати сторінку при кожному натисканні
-    document.getElementById('global-search').addEventListener('input', debounce((e) => {
+    // Функція виправлення розкладки (En -> Ukr)
+    function fixLayout(str) {
+        const replacer = {
+            "q":"й", "w":"ц", "e":"у", "r":"к", "t":"е", "y":"н", "u":"г", "i":"ш", "o":"щ", "p":"з", "[":"х", "]":"ї", "a":"ф", "s":"і", "d":"в", "f":"а", "g":"п", "h":"р", "j":"о", "k":"л", "l":"д", ";":"ж", "'":"є", "z":"я", "x":"ч", "c":"с", "v":"м", "b":"и", "n":"т", "m":"ь", ",":"б", ".":"ю", "/":".", "`":"'"
+        };
+        return str.split('').map(c => replacer[c.toLowerCase()] || c).join('');
+    }
+
+    // Пошук без затримки (миттєвий)
+    document.getElementById('global-search').addEventListener('input', (e) => {
         filterContent(e.target.value);
-    }, 300)); // Затримка 300мс
+    });
     
-    // Гаряча клавіша "/" для пошуку
+    // Гарячі клавіші: "/" та "Ctrl+F"
     document.addEventListener('keydown', (e) => {
+        // Стандартний пошук Ctrl+F
+        if ((e.ctrlKey || e.metaKey) && (e.key.toLowerCase() === 'f' || e.key.toLowerCase() === 'а')) {
+            e.preventDefault();
+            const searchInput = document.getElementById('global-search');
+            searchInput.focus();
+            if (searchInput.value) searchInput.select();
+        }
+        // Швидкий пошук через "/"
         if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
             e.preventDefault();
             document.getElementById('global-search').focus();
@@ -1763,6 +2266,12 @@
         const btn = document.querySelector('.scroll-top-btn');
         if (window.scrollY > 300) btn.classList.add('visible');
         else btn.classList.remove('visible');
+
+        // Progress Bar Logic
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        document.getElementById("myBar").style.width = scrolled + "%";
     });
 
     // --- ЗАПУСК ---
@@ -1801,6 +2310,78 @@
     document.getElementById('settings-modal').addEventListener('click', (e) => {
         if (e.target.id === 'settings-modal') closeSettings();
     });
+
+    // === AI CHAT LOGIC ===
+    function toggleChat() {
+        const win = document.getElementById('ai-window');
+        win.classList.toggle('open');
+        if(win.classList.contains('open')) document.getElementById('ai-input').focus();
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById('ai-input');
+        const msgContainer = document.getElementById('ai-messages');
+        const typing = document.getElementById('ai-typing');
+        const text = input.value.trim();
+        
+        // ВСТАВТЕ СЮДИ ВАШ API КЛЮЧ ВІД GOOGLE GEMINI
+        // Отримати ключ: https://aistudio.google.com/app/apikey
+        const API_KEY = "AIzaSyC2XtSYcCf0hHU6WZyqjxk7Slz2PZ3WHwg"; // ВАШ КЛЮЧ. УВАГА: Обов'язково налаштуйте обмеження "Websites" в Google Cloud Console, інакше його вкрадуть!
+        const API_KEY = "AIzaSyC2XtSYcCf0hHU6WZyqjxk7Slz2PZ3WHwg"; // Обмеження HTTP Referrer налаштовано.
+
+        if (!text) return;
+
+        // Add user message
+        msgContainer.innerHTML += `<div class="msg msg-user">${text}</div>`;
+        input.value = '';
+        msgContainer.scrollTop = msgContainer.scrollHeight;
+        typing.style.display = 'block';
+
+        try {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{
+                            text: `Ти — юридичний консультант сайту Zakon.pro. Твоя мета — допомагати користувачам розбиратися в законах України. Відповідай коротко, чітко, посилаючись на статті законів, якщо це можливо. Питання користувача: ${text}`
+                        }]
+                    }]
+                })
+            });
+
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                throw new Error(errData.error?.message || `Помилка сервера: ${response.status}`);
+            }
+
+            const data = await response.json();
+            
+            if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+                throw new Error("AI не надав відповіді (можливо, питання порушує правила безпеки або є незрозумілим).");
+            }
+
+            const aiText = data.candidates[0].content.parts[0].text;
+            
+            // Format simple markdown to HTML (bold)
+            const formattedText = aiText.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+
+            msgContainer.innerHTML += `<div class="msg msg-ai">${formattedText}</div>`;
+        } catch (error) {
+            console.error("AI Error:", error);
+            let errorMsg = error.message || String(error);
+            
+            // Переклад помилки Failed to fetch для користувача
+            if (errorMsg && errorMsg.includes('Failed to fetch')) {
+                errorMsg = "Не вдалося з'єднатися з сервером. Перевірте інтернет або увімкніть VPN (якщо Google заблоковано у вашому регіоні).";
+            }
+            
+            msgContainer.innerHTML += `<div class="msg msg-ai" style="color:var(--danger)">Помилка: ${errorMsg}</div>`;
+        } finally {
+            typing.style.display = 'none';
+            msgContainer.scrollTop = msgContainer.scrollHeight;
+        }
+    }
 </script>
 </body>
 </html>
