@@ -861,7 +861,6 @@
             }
         } catch (e) {
             // Якщо браузер старий або блокує crypto
-            msg.innerText = "Помилка криптографії. Використовуйте сучасний браузер.";
             msg.innerText = "Помилка: Браузер блокує криптографію. Відкрийте сайт через HTTPS або localhost (не як файл).";
         }
     }
@@ -2326,7 +2325,6 @@
         
         // ВСТАВТЕ СЮДИ ВАШ API КЛЮЧ ВІД GOOGLE GEMINI
         // Отримати ключ: https://aistudio.google.com/app/apikey
-        const API_KEY = "AIzaSyC2XtSYcCf0hHU6WZyqjxk7Slz2PZ3WHwg"; // ВАШ КЛЮЧ. УВАГА: Обов'язково налаштуйте обмеження "Websites" в Google Cloud Console, інакше його вкрадуть!
         const API_KEY = "AIzaSyC2XtSYcCf0hHU6WZyqjxk7Slz2PZ3WHwg"; // Обмеження HTTP Referrer налаштовано.
 
         if (!text) return;
