@@ -844,6 +844,29 @@
         "civil-2026-admin": "1234"
     };
 
+    // Допоміжні функції для контролю доступу
+    function isSiteUnlocked() {
+        return sessionStorage.getItem('site_unlocked') === 'true';
+    }
+
+    function setSiteUnlocked() {
+        sessionStorage.setItem('site_unlocked', 'true');
+    }
+
+    function clearSiteUnlocked() {
+        sessionStorage.removeItem('site_unlocked');
+    }
+
+    function enforceSiteLock() {
+        const overlay = document.getElementById('site-lock-overlay');
+        if (!overlay) return;
+        if (isSiteUnlocked()) {
+            overlay.style.display = 'none';
+        } else {
+            overlay.style.display = 'flex';
+        }
+    }
+
     async function checkSitePassword() {
         const input = document.getElementById('site-pass').value;
         const msg = document.getElementById('site-login-msg');
@@ -875,13 +898,13 @@
                 const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
             if (hashHex === SITE_HASH) {
-                document.getElementById('site-lock-overlay').style.display = 'none';
+                setSiteUnlocked();
+                enforceSiteLock();
 
                 // Скидаємо лічильники невдалих спроб
                 localStorage.removeItem('site_failed_attempts');
                 localStorage.removeItem('site_lock_until');
 
-                // Не зберігаємо сесію: пароль буде запитуватися при кожному новому відкритті сайту
                 // Запускаємо таймер
                 if (typeof initApp === 'function') initApp();
             } else {
@@ -909,8 +932,23 @@
         }
     }
     
-    // Завжди показуємо екран пароля при завантаженні сторінки
-    document.getElementById('site-lock-overlay').style.display = 'flex';
+    // При першому завантаженні сторінки вважаємо сайт заблокованим
+    clearSiteUnlocked();
+    enforceSiteLock();
+
+    // Глобальний перехоплювач кліків: якщо немає доступу – блокуємо взаємодію і повертаємо до екрану пароля
+    document.addEventListener('click', function (e) {
+        if (isSiteUnlocked()) return;
+
+        const overlay = document.getElementById('site-lock-overlay');
+        if (overlay && overlay.contains(e.target)) {
+            return; // дозволяємо взаємодію тільки з формою пароля
+        }
+
+        enforceSiteLock();
+        e.stopPropagation();
+        e.preventDefault();
+    }, true);
     
     // Enter key support
     document.getElementById('site-pass').addEventListener('keypress', function (e) {
