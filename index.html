@@ -12,7 +12,7 @@
     <meta http-equiv="X-Frame-Options" content="DENY">
     <!-- Вкажіть тут ваше реальне посилання на GitHub Pages -->
     <link rel="canonical" href="https://your-username.github.io/zakon-pro/">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://fonts.gstatic.com data:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self';">
     <title>Zakon.pro | Закони України</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -828,22 +828,51 @@
         try { if (window.self !== window.top) window.top.location = window.self.location; } catch (e) {}
     })();
 
-    // === ЛОГІКА ПАРОЛЯ НА САЙТ ===
+    // === ЛОГІКА ПАРОЛЯ НА САЙТ + АНТИ-БРУТФОРС ===
     // Хеш пароля "1234" (SHA-256). 
     // Згенерувати свій: https://xorbin.com/tools/sha256-hash-calculator
     const SITE_HASH = "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"; 
+    const MAX_ATTEMPTS = 5;                // Максимум спроб до блокування
+    const LOCK_DURATION_MS = 15 * 60 * 1000; // Тривалість блокування: 15 хвилин
+    // Кілька різних паролів, які всі відкривають сайт
+    // КЛЮЧ: фактичний пароль для користувача
+    // ЗНАЧЕННЯ: "канонічний" пароль, для якого збережено SITE_HASH (тут це "1234")
+    const PASSWORD_ALIASES = {
+        "1234": "1234",                 // базовий пароль (як і раніше)
+        "civil-2026-ivan": "1234",
+        "civil-2026-olga": "1234",
+        "civil-2026-admin": "1234"
+    };
 
     async function checkSitePassword() {
         const input = document.getElementById('site-pass').value;
         const msg = document.getElementById('site-login-msg');
         
         if (!input) return;
+        
+        // Нормалізуємо введений пароль до "канонічного" значення
+        const canonicalPassword = Object.prototype.hasOwnProperty.call(PASSWORD_ALIASES, input)
+            ? PASSWORD_ALIASES[input]
+            : input;
+
+        // Перевірка, чи немає активного блокування після багатьох помилок
+        const lockUntilRaw = localStorage.getItem('site_lock_until');
+        const nowTs = Date.now();
+        if (lockUntilRaw) {
+            const lockUntil = parseInt(lockUntilRaw, 10);
+            if (!isNaN(lockUntil) && nowTs < lockUntil) {
+                const remainingMs = lockUntil - nowTs;
+                const remainingMin = Math.ceil(remainingMs / (60 * 1000));
+                msg.innerText = `Забагато невдалих спроб. Спробуйте ще раз через приблизно ${remainingMin} хвилин.`;
+                return;
+            }
+        }
 
         try {
-            const msgBuffer = new TextEncoder().encode(input);
+            const msgBuffer = new TextEncoder().encode(canonicalPassword);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
             const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
             if (hashHex === SITE_HASH) {
                 document.getElementById('site-lock-overlay').style.display = 'none';
@@ -852,12 +881,31 @@
                 const expiryTime = Date.now() + (7 * 24 * 60 * 60 * 1000);
                 localStorage.setItem('site_unlocked', 'true');
                 localStorage.setItem('sessionExpiry', expiryTime);
+
+                // Скидаємо лічильники невдалих спроб
+                localStorage.removeItem('site_failed_attempts');
+                localStorage.removeItem('site_lock_until');
                 
                 // Запускаємо таймер
                 if (typeof initApp === 'function') initApp();
             } else {
-                msg.innerText = "Невірний пароль.";
-                setTimeout(() => msg.innerText = '', 2000);
+                // Лічильник невдалих спроб
+                const currentAttemptsRaw = localStorage.getItem('site_failed_attempts');
+                let currentAttempts = currentAttemptsRaw ? parseInt(currentAttemptsRaw, 10) : 0;
+                if (isNaN(currentAttempts)) currentAttempts = 0;
+                currentAttempts += 1;
+                localStorage.setItem('site_failed_attempts', String(currentAttempts));
+
+                if (currentAttempts >= MAX_ATTEMPTS) {
+                    const lockUntil = Date.now() + LOCK_DURATION_MS;
+                    localStorage.setItem('site_lock_until', String(lockUntil));
+                    msg.innerText = "Доступ тимчасово заблоковано через багато невдалих спроб. Спробуйте пізніше.";
+                } else {
+                    const remaining = MAX_ATTEMPTS - currentAttempts;
+                    msg.innerText = `Невірний пароль. Залишилося спроб: ${remaining}.`;
+                }
+
+                setTimeout(() => msg.innerText = '', 3000);
             }
         } catch (e) {
             // Якщо браузер старий або блокує crypto
