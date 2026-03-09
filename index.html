@@ -876,16 +876,12 @@
 
             if (hashHex === SITE_HASH) {
                 document.getElementById('site-lock-overlay').style.display = 'none';
-                
-                // Встановлюємо сесію на 1 тиждень (7 днів)
-                const expiryTime = Date.now() + (7 * 24 * 60 * 60 * 1000);
-                localStorage.setItem('site_unlocked', 'true');
-                localStorage.setItem('sessionExpiry', expiryTime);
 
                 // Скидаємо лічильники невдалих спроб
                 localStorage.removeItem('site_failed_attempts');
                 localStorage.removeItem('site_lock_until');
-                
+
+                // Не зберігаємо сесію: пароль буде запитуватися при кожному новому відкритті сайту
                 // Запускаємо таймер
                 if (typeof initApp === 'function') initApp();
             } else {
@@ -913,19 +909,8 @@
         }
     }
     
-    // Перевірка сесії (щоб не вводити пароль при оновленні сторінки)
-    const savedExpiry = localStorage.getItem('sessionExpiry');
-    const isUnlocked = localStorage.getItem('site_unlocked');
-    const now = Date.now();
-
-    if (isUnlocked === 'true' && savedExpiry && now < parseInt(savedExpiry)) {
-        document.getElementById('site-lock-overlay').style.display = 'none';
-    } else {
-        // Якщо час вийшов або не входили - блокуємо
-        localStorage.removeItem('site_unlocked');
-        localStorage.removeItem('sessionExpiry');
-        document.getElementById('site-lock-overlay').style.display = 'flex';
-    }
+    // Завжди показуємо екран пароля при завантаженні сторінки
+    document.getElementById('site-lock-overlay').style.display = 'flex';
     
     // Enter key support
     document.getElementById('site-pass').addEventListener('keypress', function (e) {
